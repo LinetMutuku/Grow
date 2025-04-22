@@ -5,6 +5,7 @@ import AdminDashboardPage from './admindashboard/page';
 import UserManagementPage from './admindashboard/users/page';
 import InvestmentPage from './admindashboard/investments/page';
 import ProjectManagementPage from './admindashboard/projects/page';
+import IssuesPage from './admindashboard/issues/page';
 
 export default function Home() {
     const pathname = usePathname();
@@ -16,6 +17,8 @@ export default function Home() {
         return <InvestmentPage />;
     } else if (pathname === '/admindashboard/projects') {
         return <ProjectManagementPage />;
+    } else if (pathname === '/admindashboard/issues') {
+        return <IssuesPage />;
     }
 
     // Default to the admin dashboard

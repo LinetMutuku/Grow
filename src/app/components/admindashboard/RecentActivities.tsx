@@ -101,38 +101,38 @@ const ActivityIcon = ({ type }: { type: string }) => {
     switch (type) {
         case 'registration':
             return (
-                <div className="flex-shrink-0 w-6 h-6 bg-green-100 text-green-600 rounded-md flex items-center justify-center">
-                    <span className="text-green-500 text-xs">✓</span>
+                <div className="flex-shrink-0 w-7 h-7 bg-green-50 text-green-600 rounded-full flex items-center justify-center shadow-sm border border-green-100">
+                    <span className="text-green-600 text-xs">✓</span>
                 </div>
             );
         case 'verification':
             return (
-                <div className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-md flex items-center justify-center">
-                    <span className="text-blue-500 text-xs">➕</span>
+                <div className="flex-shrink-0 w-7 h-7 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center shadow-sm border border-blue-100">
+                    <span className="text-blue-600 text-xs">➕</span>
                 </div>
             );
         case 'investment':
             return (
-                <div className="flex-shrink-0 w-6 h-6 bg-yellow-100 text-yellow-600 rounded-md flex items-center justify-center">
-                    <span className="text-yellow-500 text-xs">💰</span>
+                <div className="flex-shrink-0 w-7 h-7 bg-yellow-50 text-yellow-600 rounded-full flex items-center justify-center shadow-sm border border-yellow-100">
+                    <span className="text-yellow-600 text-xs">💰</span>
                 </div>
             );
         case 'withdrawal':
             return (
-                <div className="flex-shrink-0 w-6 h-6 bg-teal-100 text-teal-600 rounded-md flex items-center justify-center">
-                    <span className="text-teal-500 text-xs">📥</span>
+                <div className="flex-shrink-0 w-7 h-7 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center shadow-sm border border-teal-100">
+                    <span className="text-teal-600 text-xs">📥</span>
                 </div>
             );
         case 'market':
             return (
-                <div className="flex-shrink-0 w-6 h-6 bg-red-100 text-red-600 rounded-md flex items-center justify-center">
-                    <span className="text-red-500 text-xs">📈</span>
+                <div className="flex-shrink-0 w-7 h-7 bg-red-50 text-red-600 rounded-full flex items-center justify-center shadow-sm border border-red-100">
+                    <span className="text-red-600 text-xs">📈</span>
                 </div>
             );
         default:
             return (
-                <div className="flex-shrink-0 w-6 h-6 bg-gray-100 text-gray-600 rounded-md flex items-center justify-center">
-                    <span className="text-gray-500 text-xs">•</span>
+                <div className="flex-shrink-0 w-7 h-7 bg-gray-50 text-gray-600 rounded-full flex items-center justify-center shadow-sm border border-gray-100">
+                    <span className="text-gray-600 text-xs">•</span>
                 </div>
             );
     }
@@ -149,17 +149,17 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ maxActivities = 6 }
     }).slice(0, maxActivities);
 
     return (
-        <div className="bg-white rounded-md shadow-sm">
-            <div className="p-4 border-b border-gray-100">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+            <div className="p-5 border-b border-gray-100">
                 <div className="flex justify-between items-center">
-                    <h2 className="text-lg font-medium">Recent Activities</h2>
-                    <p className="text-xs text-gray-500">5 new activities today</p>
+                    <h2 className="text-lg font-medium text-gray-800">Recent Activities</h2>
+                    <p className="text-xs text-gray-500 font-medium">5 new activities today</p>
                 </div>
 
-                <div className="flex space-x-1 mt-3">
+                <div className="flex space-x-2 mt-4">
                     <button
                         type="button"
-                        className={`px-3 py-1 text-xs font-medium rounded-md ${
+                        className={`px-4 py-1.5 text-xs font-medium rounded-md transition-colors ${
                             dateFilter === 'today'
                                 ? 'bg-red-100 text-red-800'
                                 : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
@@ -170,7 +170,7 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ maxActivities = 6 }
                     </button>
                     <button
                         type="button"
-                        className={`px-3 py-1 text-xs font-medium rounded-md ${
+                        className={`px-4 py-1.5 text-xs font-medium rounded-md transition-colors ${
                             dateFilter === 'yesterday'
                                 ? 'bg-red-100 text-red-800'
                                 : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
@@ -181,7 +181,7 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ maxActivities = 6 }
                     </button>
                     <button
                         type="button"
-                        className={`px-3 py-1 text-xs font-medium rounded-md ${
+                        className={`px-4 py-1.5 text-xs font-medium rounded-md transition-colors ${
                             dateFilter === 'this_week'
                                 ? 'bg-red-100 text-red-800'
                                 : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
@@ -193,36 +193,42 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ maxActivities = 6 }
                 </div>
 
                 {/* Search Bar */}
-                <div className="relative mt-3">
+                <div className="relative mt-4">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <FiSearch className="text-gray-400 h-4 w-4" />
                     </div>
                     <input
                         type="text"
-                        className="w-full bg-gray-100 pl-8 pr-3 py-2 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-green-500"
-                        placeholder="Search..."
+                        className="w-full bg-gray-50 pl-9 pr-4 py-2 rounded-md text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors"
+                        placeholder="Search activities..."
                     />
                 </div>
             </div>
 
             <div className="divide-y divide-gray-100 max-h-[420px] overflow-y-auto">
                 {filteredActivities.map((activity) => (
-                    <div key={activity.id} className="p-4 hover:bg-gray-50">
+                    <div key={activity.id} className="p-4 hover:bg-gray-50 transition-colors">
                         <div className="flex space-x-3">
                             <ActivityIcon type={activity.type} />
                             <div className="min-w-0 flex-1">
-                                <div className="flex justify-between">
-                                    <h3 className="text-sm font-medium">{activity.title}</h3>
-                                    <p className="text-xs text-gray-500">{activity.timestamp}</p>
+                                <div className="flex justify-between items-center">
+                                    <h3 className="text-sm font-medium text-gray-800">{activity.title}</h3>
+                                    <p className="text-xs text-gray-500 font-medium">{activity.timestamp}</p>
                                 </div>
-                                <p className="text-sm text-gray-600">{activity.description}</p>
+                                <p className="text-sm text-gray-600 mt-1">{activity.description}</p>
                                 {activity.subtext && (
-                                    <p className="text-xs text-gray-500">{activity.subtext}</p>
+                                    <p className="text-xs text-gray-500 mt-0.5">{activity.subtext}</p>
                                 )}
                             </div>
                         </div>
                     </div>
                 ))}
+            </div>
+
+            <div className="p-3 border-t border-gray-100 text-center">
+                <button className="text-sm text-red-600 hover:text-red-800 font-medium">
+                    View All Activities
+                </button>
             </div>
         </div>
     );

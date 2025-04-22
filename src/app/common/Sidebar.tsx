@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
     FiHome,
     FiUsers,
@@ -16,11 +16,21 @@ import {
     FiMenu,
     FiChevronLeft,
     FiChevronRight,
-    FiLogOut
+    FiLogOut,
+    FiAlertCircle,
+    FiChevronDown
 } from 'react-icons/fi';
 
 const menuItems = [
-    { name: 'Dashboard', icon: FiHome, path: '/' },
+    {
+        name: 'Dashboard',
+        icon: FiHome,
+        path: '/',
+        hasChildren: true,
+        children: [
+            { name: 'Issue Management', icon: FiAlertCircle, path: '/admindashboard/issues' }
+        ]
+    },
     { name: 'User Management', icon: FiUsers, path: '/admindashboard/users' },
     { name: 'Projects', icon: FiFolder, path: '/admindashboard/projects' },
     { name: 'Investments', icon: FiDollarSign, path: '/admindashboard/investments' },
@@ -31,10 +41,12 @@ const menuItems = [
 
 const Sidebar = ({ companyName = "GROW" }) => {
     const pathname = usePathname();
+    const router = useRouter();
     const [collapsed, setCollapsed] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [isMobileView, setIsMobileView] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [expandedMenus, setExpandedMenus] = useState({});
 
     useEffect(() => {
         const handleResize = () => {
@@ -42,8 +54,24 @@ const Sidebar = ({ companyName = "GROW" }) => {
         };
         handleResize();
         window.addEventListener('resize', handleResize);
+
+        // Check if any menu item should be expanded based on current path
+        const expandedState = {};
+        menuItems.forEach(item => {
+            if (item.hasChildren) {
+                const shouldExpand = item.children.some(child =>
+                    pathname === child.path ||
+                    (child.path !== '/' && pathname?.startsWith(child.path))
+                );
+                if (shouldExpand) {
+                    expandedState[item.name] = true;
+                }
+            }
+        });
+        setExpandedMenus(expandedState);
+
         return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    }, [pathname]);
 
     const toggleSidebar = () => {
         setCollapsed(!collapsed);
@@ -51,6 +79,23 @@ const Sidebar = ({ companyName = "GROW" }) => {
 
     const toggleMobileMenu = () => {
         setMobileMenuOpen(!mobileMenuOpen);
+    };
+
+    const toggleMenuExpansion = (event, menuName, menuPath) => {
+        // If clicking on the chevron or main part of the button, toggle expansion
+        if (!event.target.closest('.menu-chevron') && !event.target.classList.contains('menu-chevron')) {
+            // Navigate to the menu path
+            router.push(menuPath);
+        }
+
+        // Toggle the expansion state
+        setExpandedMenus({
+            ...expandedMenus,
+            [menuName]: !expandedMenus[menuName]
+        });
+
+        // Stop event propagation to prevent navigation when clicking the chevron
+        event.stopPropagation();
     };
 
     return (
@@ -97,7 +142,7 @@ const Sidebar = ({ companyName = "GROW" }) => {
                             />
                         </div>
                         {!collapsed && (
-                            <h1 className="text-xl  text-green-700 transition-opacity duration-300">
+                            <h1 className="text-xl text-green-700 transition-opacity duration-300">
                                 {companyName}
                             </h1>
                         )}
@@ -129,34 +174,112 @@ const Sidebar = ({ companyName = "GROW" }) => {
 
                 {/* Menu Items */}
                 <div className="px-3 overflow-y-auto" style={{ height: 'calc(100vh - 245px)' }}>
-                    <nav className="space-y-2">
+                    <nav className="space-y-1">
                         {menuItems.map((item) => {
-                            const isActive = pathname === item.path ||
+                            const isCurrentPath = pathname === item.path ||
                                 (item.path !== '/' && pathname?.startsWith(item.path));
 
-                            return (
-                                <Link
-                                    href={item.path}
-                                    key={item.name}
-                                    className={`
-                    flex items-center px-3 py-2.5 rounded-md transition-all duration-200 group
-                    ${isActive
-                                        ? 'bg-green-50 text-green-600 border-l-4 border-green-600'
-                                        : 'text-gray-700 hover:bg-gray-100 hover:translate-x-1'
-                                    }
-                  `}
-                                >
-                                    <item.icon className={`${collapsed ? 'mx-auto' : 'mr-3'}`} size={20} />
-                                    {!collapsed && <span className="text-sm font-medium">{item.name}</span>}
+                            const isActive = isCurrentPath ||
+                                (item.hasChildren && item.children.some(child =>
+                                    pathname === child.path ||
+                                    (child.path !== '/' && pathname?.startsWith(child.path))
+                                ));
 
-                                    {/* Tooltip for collapsed state */}
-                                    {collapsed && (
-                                        <div className="absolute left-full ml-4 px-2 py-1 bg-gray-800 text-white text-xs rounded
-                    opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
-                                            {item.name}
+                            // Add extra margin after Audit Log
+                            const isAuditLog = item.name === 'Audit Log';
+                            const extraMargin = isAuditLog ? 'mb-6' : '';
+
+                            return (
+                                <div key={item.name}>
+                                    {item.hasChildren ? (
+                                        <div className={extraMargin}>
+                                            {/* Parent item */}
+                                            <div
+                                                className={`
+                                                    w-full flex items-center justify-between px-3 py-2.5 rounded-md transition-all duration-200 group cursor-pointer
+                                                    ${isActive
+                                                    ? 'bg-green-50 text-green-600 border-l-4 border-green-600'
+                                                    : 'text-gray-700 hover:bg-gray-100 hover:translate-x-1'
+                                                }
+                                                `}
+                                                onClick={(e) => toggleMenuExpansion(e, item.name, item.path)}
+                                            >
+                                                <div className="flex items-center">
+                                                    <item.icon className={`${collapsed ? 'mx-auto' : 'mr-3'}`} size={20} />
+                                                    {!collapsed && <span className="text-sm font-medium">{item.name}</span>}
+                                                </div>
+
+                                                {!collapsed && (
+                                                    <div className="menu-chevron">
+                                                        <FiChevronDown
+                                                            className={`transform transition-transform duration-200 ${expandedMenus[item.name] ? 'rotate-180' : ''}`}
+                                                            size={16}
+                                                        />
+                                                    </div>
+                                                )}
+
+                                                {/* Tooltip for collapsed state */}
+                                                {collapsed && (
+                                                    <div className="absolute left-full ml-4 px-2 py-1 bg-gray-800 text-white text-xs rounded
+                                                        opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
+                                                        {item.name}
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Child items */}
+                                            <div className={`pl-7 mt-1 space-y-1 overflow-hidden transition-all duration-200 ease-in-out
+                                                ${expandedMenus[item.name] ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}
+                                                ${collapsed ? 'hidden' : ''}
+                                            `}>
+                                                {item.children.map(child => {
+                                                    const isChildActive = pathname === child.path ||
+                                                        (child.path !== '/' && pathname?.startsWith(child.path));
+
+                                                    return (
+                                                        <Link
+                                                            href={child.path}
+                                                            key={child.name}
+                                                            className={`
+                                                                flex items-center px-3 py-2 rounded-md transition-all duration-200 group
+                                                                ${isChildActive
+                                                                ? 'bg-green-50 text-green-600 border-l-2 border-green-600'
+                                                                : 'text-gray-600 hover:bg-gray-100 hover:translate-x-1'
+                                                            }
+                                                            `}
+                                                        >
+                                                            <child.icon size={16} className="mr-2" />
+                                                            <span className="text-sm">{child.name}</span>
+                                                        </Link>
+                                                    );
+                                                })}
+                                            </div>
                                         </div>
+                                    ) : (
+                                        <Link
+                                            href={item.path}
+                                            className={`
+                                                flex items-center px-3 py-2.5 rounded-md transition-all duration-200 group
+                                                ${isActive
+                                                ? 'bg-green-50 text-green-600 border-l-4 border-green-600'
+                                                : 'text-gray-700 hover:bg-gray-100 hover:translate-x-1'
+                                            }
+                                                ${extraMargin}
+                                            `}
+                                        >
+                                            <item.icon className={`${collapsed ? 'mx-auto' : 'mr-3'}`} size={20} />
+                                            {!collapsed && <span className="text-sm font-medium">{item.name}</span>}
+
+                                            {/* Tooltip for collapsed state */}
+                                            {collapsed && (
+                                                <div className="absolute left-full ml-4 px-2 py-1 bg-gray-800 text-white text-xs rounded
+                                                    opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
+                                                    {item.name}
+                                                </div>
+                                            )}
+                                        </Link>
                                     )}
-                                </Link>
+                                </div>
                             );
                         })}
                     </nav>
