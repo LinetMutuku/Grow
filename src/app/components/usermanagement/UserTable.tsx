@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FiChevronLeft, FiChevronRight, FiMoreVertical } from 'react-icons/fi';
+import ActionModal from './ActionModal';
+import ConfirmationModal from './ConfirmationModal';
 
 // Sample user data
 const usersData = [
@@ -17,7 +19,12 @@ const usersData = [
 
 const UserTable = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+    const [selectedUsers, setSelectedUsers] = useState([]);
+    // State for action modal
+    const [actionModalOpen, setActionModalOpen] = useState(null);
+    // Add state to track if confirmation/reason modals should be shown directly
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [actionType, setActionType] = useState(null);
 
     const usersPerPage = 8;
     const indexOfLastUser = currentPage * usersPerPage;
@@ -26,7 +33,7 @@ const UserTable = () => {
 
     const totalPages = Math.ceil(usersData.length / usersPerPage);
 
-    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     const toggleSelectAll = () => {
         if (selectedUsers.length === currentUsers.length) {
@@ -36,11 +43,51 @@ const UserTable = () => {
         }
     };
 
-    const toggleSelectUser = (userId: number) => {
+    const toggleSelectUser = (userId) => {
         if (selectedUsers.includes(userId)) {
             setSelectedUsers(selectedUsers.filter(id => id !== userId));
         } else {
             setSelectedUsers([...selectedUsers, userId]);
+        }
+    };
+
+    // Action modal handlers
+    const handleActionClick = (userId) => {
+        // Close if already open, open if closed
+        setActionModalOpen(actionModalOpen === userId ? null : userId);
+    };
+
+    const handleAction = (action, reason) => {
+        const userId = actionModalOpen;
+        console.log(`Performing action: ${action} on user: ${userId}, reason: ${reason}`);
+
+        // Ensure all modals are properly handled
+        if (action === 'reactivate' || action === 'suspend') {
+            // Store the action type to be used in ConfirmationModal
+            setActionType(action);
+            // Show confirmation modal
+            setShowConfirmation(true);
+        } else {
+            // For view details or other actions
+            console.log(`Performing direct action: ${action} on user: ${userId}`);
+        }
+
+        // Here you would implement the actual functionality based on the action
+        // For example, call an API to suspend/reactivate the user
+
+        // Close the action modal but not necessarily other modals
+        setActionModalOpen(null);
+    };
+
+    // Handler for when the confirmation is complete
+    const handleConfirmComplete = (confirmed, reason) => {
+        console.log(`Confirmation complete: ${confirmed}, reason: ${reason}`);
+        setShowConfirmation(false);
+
+        if (confirmed && reason) {
+            // Perform the actual action with the reason
+            console.log(`Performing ${actionType} action with reason: ${reason}`);
+            // Call API here
         }
     };
 
@@ -112,16 +159,44 @@ const UserTable = () => {
                                     View
                                 </button>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button className="text-gray-400 hover:text-gray-500">
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative">
+                                <button
+                                    className="text-gray-400 hover:text-gray-500"
+                                    onClick={() => handleActionClick(user.id)}
+                                >
                                     <FiMoreVertical className="h-5 w-5" />
                                 </button>
+
+                                {actionModalOpen === user.id && (
+                                    <ActionModal
+                                        isOpen={true}
+                                        onClose={() => setActionModalOpen(null)}
+                                        onAction={handleAction}
+                                        userStatus="active" // You can pass the actual user status here
+                                    />
+                                )}
                             </td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
             </div>
+
+            {/* Confirmation Modal - Rendered at the root level */}
+            {showConfirmation && (
+                <ConfirmationModal
+                    isOpen={showConfirmation}
+                    onClose={() => setShowConfirmation(false)}
+                    onConfirmResult={handleConfirmComplete}
+                    title={actionType === 'reactivate'
+                        ? "Are you sure you want to reactivate the selected account?"
+                        : "Are you sure you want to suspend the selected account?"}
+                    actionText={actionType === 'reactivate'
+                        ? "Yes, Reactivate User"
+                        : "Yes, Suspend User"}
+                    actionType={actionType}
+                />
+            )}
 
             <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                 <div className="flex-1 flex justify-between sm:hidden">
@@ -158,63 +233,34 @@ const UserTable = () => {
                                 <FiChevronLeft className="h-5 w-5" />
                             </button>
 
-                            <button
-                                onClick={() => paginate(1)}
-                                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
-                                    currentPage === 1 ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-gray-50'
-                                }`}
-                            >
-                                1
-                            </button>
-
-                            <button
-                                onClick={() => paginate(2)}
-                                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
-                                    currentPage === 2 ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-gray-50'
-                                }`}
-                            >
-                                2
-                            </button>
-
-                            <button
-                                onClick={() => paginate(3)}
-                                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
-                                    currentPage === 3 ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-gray-50'
-                                }`}
-                            >
-                                3
-                            </button>
+                            {/* Pagination buttons */}
+                            {[1, 2, 3].map(num => (
+                                <button
+                                    key={num}
+                                    onClick={() => paginate(num)}
+                                    className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
+                                        currentPage === num ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-gray-50'
+                                    }`}
+                                >
+                                    {num}
+                                </button>
+                            ))}
 
                             <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                ...
-              </span>
+                                ...
+                            </span>
 
-                            <button
-                                onClick={() => paginate(8)}
-                                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
-                                    currentPage === 8 ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-gray-50'
-                                }`}
-                            >
-                                8
-                            </button>
-
-                            <button
-                                onClick={() => paginate(9)}
-                                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
-                                    currentPage === 9 ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-gray-50'
-                                }`}
-                            >
-                                9
-                            </button>
-
-                            <button
-                                onClick={() => paginate(10)}
-                                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
-                                    currentPage === 10 ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-gray-50'
-                                }`}
-                            >
-                                10
-                            </button>
+                            {[8, 9, 10].map(num => (
+                                <button
+                                    key={num}
+                                    onClick={() => paginate(num)}
+                                    className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
+                                        currentPage === num ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-gray-50'
+                                    }`}
+                                >
+                                    {num}
+                                </button>
+                            ))}
 
                             <button
                                 onClick={() => paginate(currentPage + 1)}
