@@ -24,3 +24,47 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* Font family------------------ */
+@font-face {
+  font-family:dm-sans-400;
+  src: url(./fonts/DMSans_18pt-Regular.ttf);
+}
+@font-face {
+  font-family:dm-sans-500;
+  src: url(./fonts/DMSans_18pt-Medium.ttf);
+}
+
+@font-face {
+  font-family:manrope-500;
+  src: url(./fonts/Manrope-Medium.ttf);
+}
+@font-face {
+  font-family:manrope-600;
+  src: url(./fonts/Manrope-SemiBold.ttf);
+}
+
+.dm-sans-400
+{
+  font-family: dm-sans-400;
+}
+.dm-sans-500
+{
+  font-family: dm-sans-500;
+}
+
+.monrope-500
+{
+  font-family: manrope-500;
+}
+.monrope-600
+{
+  font-family: manrope-600;
+}
+/* ----------------------------------- */
+
+.dark-overlay
+{
+  background-color: rgba(0, 0, 0, 0.671);
+}
