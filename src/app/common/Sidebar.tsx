@@ -25,7 +25,7 @@ const menuItems = [
     {
         name: 'Dashboard',
         icon: FiHome,
-        path: '/',
+        path: '/admindashboard',
         hasChildren: true,
         children: [
             { name: 'Issue Management', icon: FiAlertCircle, path: '/admindashboard/issues' }
