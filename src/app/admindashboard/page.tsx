@@ -64,7 +64,7 @@ const AdminDashboardPage = () => {
     }
 
     return (
-        <div className="flex h-screen bg-gray-50 text-black">
+        <div className="flex min-h-screen bg-gray-50 text-black">
             {/*  Sidebar */}
             <Sidebar />
 
@@ -79,7 +79,7 @@ const AdminDashboardPage = () => {
                 />
 
                 {/* Dashboard content */}
-                <div className="p-6">
+                <div className="p-6 bg-gray-50">
                     <KeyMetrics />
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                         <div className="lg:col-span-3 space-y-6">

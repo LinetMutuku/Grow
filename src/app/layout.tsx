@@ -27,12 +27,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html lang="en" className="h-full">
         <head>
             <link rel="icon" href="/grow-logo.svg" />
         </head>
         <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 min-h-full h-full`}
         >
         {children}
         </body>

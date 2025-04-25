@@ -42,5 +42,5 @@ export default function Home() {
     }
 
     // Default to sign-up page for the home route
-    return <SignUpSelection />;
+    return <Login />;
 }
