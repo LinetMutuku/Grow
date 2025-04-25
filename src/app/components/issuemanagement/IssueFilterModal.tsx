@@ -23,112 +23,91 @@ const IssueFilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply
     if (!isOpen) return null;
 
     const handleStatusToggle = (status: string) => {
-        setFilters(prev => ({
-            ...prev,
-            userStatus: prev.userStatus.includes(status)
-                ? prev.userStatus.filter(s => s !== status)
-                : [...prev.userStatus, status]
-        }));
+        const newFilters = {
+            ...filters,
+            userStatus: filters.userStatus.includes(status)
+                ? filters.userStatus.filter(s => s !== status)
+                : [...filters.userStatus, status]
+        };
+        setFilters(newFilters);
+        onApplyFilters(newFilters);  // Apply immediately
     };
 
     const handleIssueTypeToggle = (type: string) => {
-        setFilters(prev => ({
-            ...prev,
-            issueType: prev.issueType.includes(type)
-                ? prev.issueType.filter(t => t !== type)
-                : [...prev.issueType, type]
-        }));
-    };
-
-    const handleApply = () => {
-        onApplyFilters(filters);
-        onClose();
-    };
-
-    const handleClear = () => {
-        setFilters({
-            userStatus: [],
-            issueType: [],
-        });
+        const newFilters = {
+            ...filters,
+            issueType: filters.issueType.includes(type)
+                ? filters.issueType.filter(t => t !== type)
+                : [...filters.issueType, type]
+        };
+        setFilters(newFilters);
+        onApplyFilters(newFilters);  // Apply immediately
     };
 
     return (
         <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/10 flex items-center justify-center z-50"
             onClick={onClose}
         >
             <div
-                className="bg-white rounded-lg shadow-xl w-[300px] p-4"
+                className="bg-white rounded-lg shadow-xl w-[280px] overflow-hidden"
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-sm font-medium text-gray-600 uppercase">Filter</h3>
-                    <button
-                        onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600"
-                    >
-                        <FiX size={18} />
-                    </button>
-                </div>
-
-                {/* User Status Section */}
-                <div className="mb-6">
-                    <h4 className="text-xs font-medium text-gray-500 uppercase mb-3">User Status</h4>
-                    <div className="space-y-2">
-                        {['All Active Users', 'All Pending Users', 'All Suspended Users'].map(status => (
-                            <button
-                                key={status}
-                                onClick={() => handleStatusToggle(status)}
-                                className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors
-                  ${filters.userStatus.includes(status)
-                                    ? 'bg-green-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                }`}
-                            >
-                                {status}
-                            </button>
-                        ))}
+                <div className="px-4 py-3 border-b border-gray-200">
+                    <div className="flex justify-between items-center">
+                        <h3 className="text-sm font-semibold text-gray-900">Filter</h3>
+                        <button
+                            onClick={onClose}
+                            className="text-gray-400 hover:text-gray-600"
+                        >
+                            <FiX size={16} />
+                        </button>
                     </div>
                 </div>
 
-                {/* Issue Type Section */}
-                <div className="mb-6">
-                    <h4 className="text-xs font-medium text-gray-500 uppercase mb-3">Issue Type</h4>
-                    <div className="space-y-2">
-                        {['Rice Issue', 'Millet Issue', 'Yam Issue', 'Beans Issue',
-                            'Cocoa Issue', 'Cassava Issue'].map(type => (
-                            <button
-                                key={type}
-                                onClick={() => handleIssueTypeToggle(type)}
-                                className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors
-                  ${filters.issueType.includes(type)
-                                    ? 'bg-green-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                }`}
-                            >
-                                {type}
-                            </button>
-                        ))}
+                {/* Content */}
+                <div className="p-4">
+                    {/* User Status Section */}
+                    <div className="mb-4">
+                        <h4 className="text-xs font-semibold text-gray-900 mb-2">USER STATUS</h4>
+                        <div className="space-y-1.5">
+                            {['All Active Users', 'All Pending Users', 'All Suspended Users'].map(status => (
+                                <button
+                                    key={status}
+                                    onClick={() => handleStatusToggle(status)}
+                                    className={`w-full text-left px-3 py-2 border rounded-md text-xs transition-all
+                      ${filters.userStatus.includes(status)
+                                        ? 'bg-green-600 text-white border-green-600'
+                                        : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                                    }`}
+                                >
+                                    {status}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                </div>
 
-                {/* Action Buttons */}
-                <div className="flex justify-between gap-3">
-                    <button
-                        onClick={handleClear}
-                        className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md
-                     hover:bg-gray-50 text-sm"
-                    >
-                        Clear
-                    </button>
-                    <button
-                        onClick={handleApply}
-                        className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md
-                     hover:bg-green-700 text-sm"
-                    >
-                        Apply
-                    </button>
+                    {/* Issue Type Section */}
+                    <div>
+                        <h4 className="text-xs font-semibold text-gray-900 mb-2">ISSUE TYPE</h4>
+                        <div className="space-y-1.5">
+                            {['Rice Issue', 'Millet Issue', 'Yam Issue', 'Beans Issue',
+                                'Cocoa Issue', 'Cassava Issue'].map(type => (
+                                <button
+                                    key={type}
+                                    onClick={() => handleIssueTypeToggle(type)}
+                                    className={`w-full text-left px-3 py-2 border rounded-md text-xs transition-all
+                      ${filters.issueType.includes(type)
+                                        ? 'bg-green-600 text-white border-green-600'
+                                        : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                                    }`}
+                                >
+                                    {type}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

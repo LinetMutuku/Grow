@@ -1,13 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiSearch, FiFilter, FiMoreVertical, FiEye, FiEdit2, FiRefreshCw, FiArchive } from 'react-icons/fi';
+import { FiSearch, FiSliders, FiArrowUpRight, FiEye, FiEdit2, FiRefreshCw, FiArchive } from 'react-icons/fi';
+import IssueDetailsModal from './IssueDetailsModal';
+import IssueFilterModal from './IssueFilterModal';
 
 const ResolvedIssues = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedIssues, setSelectedIssues] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [dropdownOpen, setDropdownOpen] = useState(null);
+    const [selectedIssue, setSelectedIssue] = useState(null);
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+    const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const issuesPerPage = 7;
 
     // Sample data for resolved issues with various statuses
@@ -184,13 +189,14 @@ const ResolvedIssues = () => {
         }
     };
 
-    // Toggle dropdown menu
-    const toggleDropdown = (issueId) => {
-        if (dropdownOpen === issueId) {
-            setDropdownOpen(null);
-        } else {
-            setDropdownOpen(issueId);
-        }
+    const handleOpenDetails = (issue) => {
+        setSelectedIssue(issue);
+        setIsDetailsModalOpen(true);
+    };
+
+    const handleApplyFilters = (filters) => {
+        // Implement your filter logic here
+        console.log('Applied filters:', filters);
     };
 
     return (
@@ -208,11 +214,13 @@ const ResolvedIssues = () => {
                 </div>
 
                 <div className="flex space-x-2 w-full sm:w-auto">
-                    <button className="flex items-center px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                        <FiFilter className="mr-2" />
-                        Filter
+                    <button
+                        className="p-1 rounded-md hover:bg-gray-100 text-gray-500"
+                        onClick={() => setIsFilterModalOpen(true)}
+                    >
+                        <FiSliders className="text-gray-600 h-4 w-4" />
                     </button>
-                    <button className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <button className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 font-medium">
                         Export
                     </button>
                 </div>
@@ -315,31 +323,10 @@ const ResolvedIssues = () => {
                                 <td className="px-3 py-4 whitespace-nowrap text-right text-sm font-medium relative">
                                     <button
                                         className="text-gray-400 hover:text-gray-600 focus:outline-none"
-                                        onClick={() => toggleDropdown(issue.id)}
+                                        onClick={() => handleOpenDetails(issue)}
                                     >
-                                        <FiMoreVertical size={16} />
+                                        <FiArrowUpRight size={20} />
                                     </button>
-
-                                    {dropdownOpen === issue.id && (
-                                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200">
-                                            <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                <FiEye className="mr-2" size={14} />
-                                                View Details
-                                            </button>
-                                            <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                <FiEdit2 className="mr-2" size={14} />
-                                                Edit Resolution
-                                            </button>
-                                            <button className="flex items-center w-full px-4 py-2 text-sm text-blue-600 hover:bg-blue-50">
-                                                <FiRefreshCw className="mr-2" size={14} />
-                                                Reopen Issue
-                                            </button>
-                                            <button className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                                <FiArchive className="mr-2" size={14} />
-                                                Archive
-                                            </button>
-                                        </div>
-                                    )}
                                 </td>
                             </tr>
                         ))}
@@ -429,6 +416,18 @@ const ResolvedIssues = () => {
                     </div>
                 </div>
             )}
+
+            <IssueDetailsModal
+                isOpen={isDetailsModalOpen}
+                onClose={() => setIsDetailsModalOpen(false)}
+                issue={selectedIssue}
+            />
+
+            <IssueFilterModal
+                isOpen={isFilterModalOpen}
+                onClose={() => setIsFilterModalOpen(false)}
+                onApplyFilters={handleApplyFilters}
+            />
         </div>
     );
 };
