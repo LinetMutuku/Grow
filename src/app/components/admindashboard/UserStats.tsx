@@ -1,19 +1,22 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 interface StatCardProps {
     label: string;
     value: string | number;
     colorScheme?: string;
     iconNumber?: string;
+    onClick?: () => void;
 }
 
 const StatCard: React.FC<StatCardProps> = ({
                                                label,
                                                value,
                                                colorScheme = 'green',
-                                               iconNumber = '2'
+                                               iconNumber = '2',
+                                               onClick
                                            }) => {
     const getBgColor = (color: string) => {
         switch (color) {
@@ -49,7 +52,10 @@ const StatCard: React.FC<StatCardProps> = ({
     const textColor = getTextColor(colorScheme);
 
     return (
-        <div className={`p-3 rounded-md border ${bgColor} mb-2 relative`}>
+        <div
+            className={`p-3 rounded-md border ${bgColor} mb-2 relative cursor-pointer hover:opacity-90 transition-opacity`}
+            onClick={onClick}
+        >
             <span className="absolute top-2 right-2 text-gray-400 text-xs">{iconNumber}</span>
             <p className="text-xs text-gray-500 uppercase tracking-wide">
                 {label}
@@ -62,6 +68,28 @@ const StatCard: React.FC<StatCardProps> = ({
 };
 
 const UserStats = () => {
+    const router = useRouter();
+
+    const handleViewAllUsers = () => {
+        router.push('/admindashboard/users');
+    };
+
+    const handleVerificationPending = () => {
+        router.push('/admindashboard/users?filter=verification_pending');
+    };
+
+    const handleSuspendedAccounts = () => {
+        router.push('/admindashboard/users?filter=suspended');
+    };
+
+    const handleIssuePending = () => {
+        router.push('/admindashboard/issues?filter=pending');
+    };
+
+    const handleIssuesResolved = () => {
+        router.push('/admindashboard/issues?filter=resolved');
+    };
+
     return (
         <div className="space-y-4">
             <div className="grid grid-cols-2 gap-2">
@@ -69,27 +97,32 @@ const UserStats = () => {
                     label="VERIFICATION PENDING"
                     value="13,000"
                     colorScheme="green"
+                    onClick={handleVerificationPending}
                 />
                 <StatCard
                     label="SUSPENDED ACCOUNTS"
                     value="1,628"
                     colorScheme="orange"
+                    onClick={handleSuspendedAccounts}
                 />
                 <StatCard
                     label="ISSUE PENDING ATTENTION"
                     value="128"
                     colorScheme="red"
+                    onClick={handleIssuePending}
                 />
                 <StatCard
                     label="ISSUES RESOLVED"
                     value="1,628"
                     colorScheme="blue"
+                    onClick={handleIssuesResolved}
                 />
             </div>
 
             <button
                 type="button"
                 className="w-full py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm font-medium"
+                onClick={handleViewAllUsers}
             >
                 View All Users
             </button>

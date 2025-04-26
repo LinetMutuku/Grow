@@ -80,14 +80,26 @@ const AdminDashboardPage = () => {
 
                 {/* Dashboard content */}
                 <div className="p-6 bg-gray-50">
-                    <KeyMetrics />
+                    {/* Key Metrics and User Stats section */}
+                    <div className="flex flex-col lg:flex-row gap-6 mb-6">
+                        {/* Key Metrics (takes up most of the width) */}
+                        <div className="flex-1">
+                            <KeyMetrics />
+                        </div>
+
+                        {/* User Stats (fixed width on the right) */}
+                        <div className="w-full lg:w-80">
+                            <UserStats />
+                        </div>
+                    </div>
+
+                    {/* Investment Flow, User Overview and Recent Activities section */}
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                         <div className="lg:col-span-3 space-y-6">
                             <InvestmentFlow />
                             <UserOverview />
                         </div>
                         <div className="space-y-6">
-                            <UserStats />
                             <RecentActivities />
                         </div>
                     </div>
