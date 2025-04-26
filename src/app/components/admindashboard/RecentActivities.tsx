@@ -1,11 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-    FiSearch,
-} from 'react-icons/fi';
+import { FiSearch } from 'react-icons/fi';
 
-// Sample activities data
+// Sample activities data - back to original
 const activitiesData = [
     {
         id: 1,
@@ -159,10 +157,10 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ maxActivities = 6 }
                 <div className="flex space-x-2 mt-4">
                     <button
                         type="button"
-                        className={`px-4 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                        className={`px-4 py-1.5 text-xs font-medium rounded-md ${
                             dateFilter === 'today'
                                 ? 'bg-red-100 text-red-800'
-                                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                                : 'bg-white text-gray-700 border border-gray-200'
                         }`}
                         onClick={() => setDateFilter('today')}
                     >
@@ -170,10 +168,10 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ maxActivities = 6 }
                     </button>
                     <button
                         type="button"
-                        className={`px-4 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                        className={`px-4 py-1.5 text-xs font-medium rounded-md ${
                             dateFilter === 'yesterday'
                                 ? 'bg-red-100 text-red-800'
-                                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                                : 'bg-white text-gray-700 border border-gray-200'
                         }`}
                         onClick={() => setDateFilter('yesterday')}
                     >
@@ -181,10 +179,10 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ maxActivities = 6 }
                     </button>
                     <button
                         type="button"
-                        className={`px-4 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                        className={`px-4 py-1.5 text-xs font-medium rounded-md ${
                             dateFilter === 'this_week'
                                 ? 'bg-red-100 text-red-800'
-                                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                                : 'bg-white text-gray-700 border border-gray-200'
                         }`}
                         onClick={() => setDateFilter('this_week')}
                     >
@@ -199,15 +197,15 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ maxActivities = 6 }
                     </div>
                     <input
                         type="text"
-                        className="w-full bg-gray-50 pl-9 pr-4 py-2 rounded-md text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors"
+                        className="w-full bg-gray-50 pl-9 pr-4 py-2 rounded-md text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500"
                         placeholder="Search activities..."
                     />
                 </div>
             </div>
 
-            <div className="divide-y divide-gray-100 max-h-[420px] overflow-y-auto">
+            <div className="divide-y divide-gray-100">
                 {filteredActivities.map((activity) => (
-                    <div key={activity.id} className="p-4 hover:bg-gray-50 transition-colors">
+                    <div key={activity.id} className="p-4">
                         <div className="flex space-x-3">
                             <ActivityIcon type={activity.type} />
                             <div className="min-w-0 flex-1">
@@ -223,12 +221,6 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ maxActivities = 6 }
                         </div>
                     </div>
                 ))}
-            </div>
-
-            <div className="p-3 border-t border-gray-100 text-center">
-                <button className="text-sm text-red-600 hover:text-red-800 font-medium">
-                    View All Activities
-                </button>
             </div>
         </div>
     );

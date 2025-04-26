@@ -53,7 +53,7 @@ const StatCard: React.FC<StatCardProps> = ({
 
     return (
         <div
-            className={`p-3 rounded-md border ${bgColor} mb-2 relative cursor-pointer hover:opacity-90 transition-opacity`}
+            className={`p-3 rounded-md border ${bgColor} relative cursor-pointer hover:opacity-90 transition-opacity`}
             onClick={onClick}
         >
             <span className="absolute top-2 right-2 text-gray-400 text-xs">{iconNumber}</span>
