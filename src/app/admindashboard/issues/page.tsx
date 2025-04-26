@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../common/Sidebar';
 import Header from '../../common/Header';
-import IssueStats from '../../components/issuemanagement/IssueStats';
-import OpenIssues from '../../components/issuemanagement/OpenIssues';
-import PendingIssues from '../../components/issuemanagement/PendingIssues';
-import ResolvedIssues from '../../components/issuemanagement/ResolvedIssues';
+import IssueStats from '@/app/components/issuemanagement/IssueStats';
+import OpenIssues from '@/app/components/issuemanagement/OpenIssues';
+import PendingIssues from '@/app/components/issuemanagement/PendingIssues';
+import ResolvedIssues from '@/app/components/issuemanagement/ResolvedIssues';
 
 const IssuesPage = () => {
     const [loading, setLoading] = useState(true);

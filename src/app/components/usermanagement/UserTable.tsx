@@ -1,10 +1,11 @@
-
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { FiChevronLeft, FiChevronRight, FiMoreVertical } from 'react-icons/fi';
 import ActionModal from './ActionModal';
 import ConfirmationModal from './ConfirmationModal';
+import BulkActionModal from './BulkActionModal';
+import UserDetailsModal from './UserDetailsModal';
 
 // Sample user data
 const usersData = [
@@ -26,6 +27,11 @@ const UserTable = () => {
     // Add state to track if confirmation/reason modals should be shown directly
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [actionType, setActionType] = useState(null);
+    // State for bulk action modal
+    const [showBulkActionModal, setShowBulkActionModal] = useState(false);
+    // State for user details modal
+    const [showUserDetailsModal, setShowUserDetailsModal] = useState(false);
+    const [selectedUserDetails, setSelectedUserDetails] = useState(null);
 
     const usersPerPage = 8;
     const indexOfLastUser = currentPage * usersPerPage;
@@ -92,6 +98,34 @@ const UserTable = () => {
         }
     };
 
+    // Bulk action handlers
+    const handleBulkActionClick = () => {
+        setShowBulkActionModal(true);
+    };
+
+    const handleBulkAction = (action) => {
+        console.log(`Performing bulk action: ${action} on users:`, selectedUsers);
+        // Here you would implement the actual bulk action
+        // For example, call an API to handle bulk operations
+
+        // Close the modal
+        setShowBulkActionModal(false);
+
+        // Optionally, clear the selection after action
+        // setSelectedUsers([]);
+    };
+
+    // User details modal handlers
+    const handleViewUserDetails = (user) => {
+        setSelectedUserDetails(user);
+        setShowUserDetailsModal(true);
+    };
+
+    const handleCloseUserDetails = () => {
+        setShowUserDetailsModal(false);
+        setSelectedUserDetails(null);
+    };
+
     return (
         <div>
             <div className="overflow-x-auto">
@@ -156,7 +190,10 @@ const UserTable = () => {
                                 {user.dateRegistered}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <button className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs px-3 py-1 rounded-md">
+                                <button
+                                    onClick={() => handleViewUserDetails(user)}
+                                    className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs px-3 py-1 rounded-md"
+                                >
                                     View
                                 </button>
                             </td>
@@ -198,6 +235,13 @@ const UserTable = () => {
                     actionType={actionType}
                 />
             )}
+
+            {/* User Details Modal */}
+            <UserDetailsModal
+                isOpen={showUserDetailsModal}
+                onClose={handleCloseUserDetails}
+                user={selectedUserDetails}
+            />
 
             <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                 <div className="flex-1 flex justify-between sm:hidden">
@@ -275,9 +319,10 @@ const UserTable = () => {
                     </div>
                 </div>
 
-                <div className="mt-4 sm:mt-0">
+                <div className="mt-4 sm:mt-0 relative">
                     <button
                         type="button"
+                        onClick={handleBulkActionClick}
                         className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                     >
                         <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -285,6 +330,16 @@ const UserTable = () => {
                         </svg>
                         Bulk Action
                     </button>
+
+                    {/* Bulk Action Modal - Positioned relative to the button */}
+                    {showBulkActionModal && (
+                        <BulkActionModal
+                            isOpen={showBulkActionModal}
+                            onClose={() => setShowBulkActionModal(false)}
+                            onAction={handleBulkAction}
+                            selectedCount={selectedUsers.length}
+                        />
+                    )}
                 </div>
             </div>
         </div>

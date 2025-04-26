@@ -1,18 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiSearch, FiSliders, FiArrowUpRight, FiEye, FiEdit2, FiArchive } from 'react-icons/fi';
+import { FiSearch, FiSliders, FiArrowUpRight } from 'react-icons/fi';
 import IssueDetailsModal from './IssueDetailsModal';
 import IssueFilterModal from './IssueFilterModal';
+import BulkActionModal from './../usermanagement/BulkActionModal';
 
 const OpenIssues = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedIssues, setSelectedIssues] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [dropdownOpen, setDropdownOpen] = useState(null);
     const [selectedIssue, setSelectedIssue] = useState(null);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+    const [isBulkActionModalOpen, setIsBulkActionModalOpen] = useState(false);
     const issuesPerPage = 7;
 
     // Sample data for open issues with various statuses
@@ -146,15 +147,6 @@ const OpenIssues = () => {
         }
     };
 
-    // Toggle dropdown menu
-    const toggleDropdown = (issueId) => {
-        if (dropdownOpen === issueId) {
-            setDropdownOpen(null);
-        } else {
-            setDropdownOpen(issueId);
-        }
-    };
-
     const handleOpenDetails = (issue) => {
         setSelectedIssue(issue);
         setIsDetailsModalOpen(true);
@@ -163,6 +155,13 @@ const OpenIssues = () => {
     const handleApplyFilters = (filters) => {
         // Implement your filter logic here
         console.log('Applied filters:', filters);
+    };
+
+    const handleBulkAction = (action) => {
+        // Implement bulk action logic here
+        console.log(`Performing ${action} on issues:`, selectedIssues);
+        setIsBulkActionModalOpen(false);
+        setSelectedIssues([]);
     };
 
     return (
@@ -179,13 +178,21 @@ const OpenIssues = () => {
                     <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 </div>
 
-                <div className="flex space-x-2 w-full sm:w-auto">
+                <div className="flex space-x-2 w-full sm:w-auto relative">
                     <button
                         className="p-1 rounded-md hover:bg-gray-100 text-gray-500"
                         onClick={() => setIsFilterModalOpen(true)}
                     >
                         <FiSliders className="text-gray-600 h-4 w-4" />
                     </button>
+
+                    {isFilterModalOpen && (
+                        <IssueFilterModal
+                            isOpen={isFilterModalOpen}
+                            onClose={() => setIsFilterModalOpen(false)}
+                            onApplyFilters={handleApplyFilters}
+                        />
+                    )}
                 </div>
             </div>
 
@@ -263,14 +270,14 @@ const OpenIssues = () => {
                                     {issue.reporter}
                                 </td>
                                 <td className="px-3 py-4 whitespace-nowrap">
-                    <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${getStatusBadgeClass(issue.status)}`}>
-                      {issue.status}
-                    </span>
+                                    <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${getStatusBadgeClass(issue.status)}`}>
+                                      {issue.status}
+                                    </span>
                                 </td>
                                 <td className="px-3 py-4 whitespace-nowrap">
-                    <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${getPriorityBadgeClass(issue.priority)}`}>
-                      {issue.priority}
-                    </span>
+                                    <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${getPriorityBadgeClass(issue.priority)}`}>
+                                      {issue.priority}
+                                    </span>
                                 </td>
                                 <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-700">
                                     {issue.type}
@@ -296,97 +303,115 @@ const OpenIssues = () => {
                 </div>
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-                <div className="flex justify-between items-center mt-4">
-                    <div className="text-sm text-gray-500">
-                        Showing {indexOfFirstIssue + 1} to {Math.min(indexOfLastIssue, filteredIssues.length)} of {filteredIssues.length} issues
+            {/* Pagination and Bulk Action Button */}
+            <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <div className="flex-1 flex justify-between sm:hidden">
+                    <button
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        Previous
+                    </button>
+                    <button
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        Next
+                    </button>
+                </div>
+                <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p className="text-sm text-gray-700">
+                            Showing page <span className="font-medium">{currentPage}</span> of{' '}
+                            <span className="font-medium">{totalPages}</span>
+                        </p>
                     </div>
+                    <div>
+                        <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            <button
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                            >
+                                <span className="sr-only">Previous</span>
+                                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                            </button>
 
-                    <div className="flex items-center space-x-1">
-                        <button
-                            className="flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled={currentPage === 1}
-                            onClick={() => setCurrentPage(currentPage - 1)}
-                        >
-                            Previous
-                        </button>
+                            {/* Pagination buttons */}
+                            {[...Array(Math.min(totalPages, 3))].map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setCurrentPage(index + 1)}
+                                    className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
+                                        currentPage === index + 1 ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-gray-50'
+                                    }`}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
 
-                        <div className="flex items-center">
-                            {[...Array(Math.min(totalPages, 5))].map((_, index) => {
-                                let pageNumber = index + 1;
-                                if (totalPages > 5 && currentPage > 3 && index === 0) {
-                                    return (
-                                        <button
-                                            key={index}
-                                            className="px-3 py-1.5 border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50 mx-0.5"
-                                            onClick={() => setCurrentPage(1)}
-                                        >
-                                            1
-                                        </button>
-                                    );
-                                }
-                                if (totalPages > 5 && currentPage > 3 && index === 1) {
-                                    return <span key={index} className="px-2">...</span>;
-                                }
-
-                                if (totalPages > 5 && currentPage > 3 && currentPage < totalPages - 2) {
-                                    pageNumber = currentPage - 1 + index;
-                                }
-
-                                if (totalPages > 5 && currentPage > totalPages - 3 && index < 3) {
-                                    pageNumber = totalPages - 4 + index;
-                                }
-
-                                return (
-                                    <button
-                                        key={index}
-                                        className={`px-3 py-1.5 border rounded-md text-sm mx-0.5 ${
-                                            currentPage === pageNumber
-                                                ? 'bg-green-600 text-white border-green-600'
-                                                : 'text-gray-600 border-gray-300 hover:bg-gray-50'
-                                        }`}
-                                        onClick={() => setCurrentPage(pageNumber)}
-                                    >
-                                        {pageNumber}
-                                    </button>
-                                );
-                            })}
-
-                            {totalPages > 5 && currentPage < totalPages - 2 && (
-                                <>
-                                    <span className="px-2">...</span>
-                                    <button
-                                        className="px-3 py-1.5 border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50 mx-0.5"
-                                        onClick={() => setCurrentPage(totalPages)}
-                                    >
-                                        {totalPages}
-                                    </button>
-                                </>
+                            {totalPages > 3 && (
+                                <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                                    ...
+                                </span>
                             )}
-                        </div>
 
-                        <button
-                            className="flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled={currentPage === totalPages}
-                            onClick={() => setCurrentPage(currentPage + 1)}
-                        >
-                            Next
-                        </button>
+                            {totalPages > 3 && (
+                                <button
+                                    onClick={() => setCurrentPage(totalPages)}
+                                    className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
+                                        currentPage === totalPages ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-gray-50'
+                                    }`}
+                                >
+                                    {totalPages}
+                                </button>
+                            )}
+
+                            <button
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                            >
+                                <span className="sr-only">Next</span>
+                                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                        </nav>
                     </div>
                 </div>
-            )}
+
+                <div className="mt-4 sm:mt-0 relative">
+                    <button
+                        type="button"
+                        onClick={() => setIsBulkActionModalOpen(true)}
+                        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                    >
+                        <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                        Bulk Action
+                    </button>
+
+                    {isBulkActionModalOpen && (
+                        <BulkActionModal
+                            isOpen={isBulkActionModalOpen}
+                            onClose={() => setIsBulkActionModalOpen(false)}
+                            onAction={handleBulkAction}
+                            selectedCount={selectedIssues.length}
+                        />
+                    )}
+                </div>
+            </div>
 
             <IssueDetailsModal
                 isOpen={isDetailsModalOpen}
                 onClose={() => setIsDetailsModalOpen(false)}
                 issue={selectedIssue}
-            />
-
-            <IssueFilterModal
-                isOpen={isFilterModalOpen}
-                onClose={() => setIsFilterModalOpen(false)}
-                onApplyFilters={handleApplyFilters}
             />
         </div>
     );
