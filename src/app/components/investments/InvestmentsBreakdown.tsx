@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiMoreVertical, FiChevronLeft, FiChevronRight, FiSearch } from 'react-icons/fi';
+import { FiMoreVertical, FiChevronLeft, FiChevronRight, FiSearch, FiSliders } from 'react-icons/fi';
+import InvestmentDetailsModal from './InvestmentDetailsModal';
 
 // Sample investments data
 const investmentsData = [
@@ -18,12 +19,23 @@ const investmentsData = [
 const InvestmentsBreakdown = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedInvestment, setSelectedInvestment] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [statusFilter, setStatusFilter] = useState('');
 
     const investmentsPerPage = 8;
-    const filteredInvestments = investmentsData.filter(investment =>
-        investment.investorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        investment.projectName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+
+    // Apply filters
+    const filteredInvestments = investmentsData.filter(investment => {
+        const matchesSearch =
+            investment.investorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            investment.projectName.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesStatus = statusFilter === '' || investment.status === statusFilter;
+
+        return matchesSearch && matchesStatus;
+    });
 
     const indexOfLastInvestment = currentPage * investmentsPerPage;
     const indexOfFirstInvestment = indexOfLastInvestment - investmentsPerPage;
@@ -47,6 +59,24 @@ const InvestmentsBreakdown = () => {
         }
     };
 
+    // Handle opening the investment details modal
+    const handleOpenModal = (investment) => {
+        setSelectedInvestment(investment);
+        setIsModalOpen(true);
+    };
+
+    // Toggle filter dropdown
+    const toggleFilter = () => {
+        setIsFilterOpen(!isFilterOpen);
+    };
+
+    // Apply status filter
+    const applyStatusFilter = (status) => {
+        setStatusFilter(status);
+        setIsFilterOpen(false);
+        setCurrentPage(1); // Reset to first page when filter changes
+    };
+
     return (
         <div>
             <div className="flex justify-between items-center mb-4">
@@ -66,6 +96,50 @@ const InvestmentsBreakdown = () => {
                         />
                     </div>
 
+                    {/* Filter button */}
+                    <div className="relative mr-2">
+                        <button
+                            type="button"
+                            onClick={toggleFilter}
+                            className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        >
+                            <FiSliders className="h-4 w-4 mr-1" />
+                            <span>Filter</span>
+                        </button>
+
+                        {/* Filter dropdown */}
+                        {isFilterOpen && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                                <div className="py-1">
+                                    <button
+                                        onClick={() => applyStatusFilter('')}
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        All
+                                    </button>
+                                    <button
+                                        onClick={() => applyStatusFilter('Active')}
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        Active
+                                    </button>
+                                    <button
+                                        onClick={() => applyStatusFilter('Pending')}
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        Pending
+                                    </button>
+                                    <button
+                                        onClick={() => applyStatusFilter('Completed')}
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        Completed
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     <button
                         type="button"
                         className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
@@ -74,6 +148,19 @@ const InvestmentsBreakdown = () => {
                     </button>
                 </div>
             </div>
+
+            {/* Status filter indicator */}
+            {statusFilter && (
+                <div className="mb-4 inline-flex items-center bg-gray-100 px-3 py-1 rounded-full text-sm">
+                    <span>Status: {statusFilter}</span>
+                    <button
+                        onClick={() => setStatusFilter('')}
+                        className="ml-2 text-gray-500 hover:text-gray-700"
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
 
             <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -121,12 +208,15 @@ const InvestmentsBreakdown = () => {
                                 {investment.investmentDate}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <span className={`font-medium ${getStatusColor(investment.status)}`}>
-                    {investment.status}
-                  </span>
+                              <span className={`font-medium ${getStatusColor(investment.status)}`}>
+                                {investment.status}
+                              </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button className="text-gray-400 hover:text-gray-500">
+                                <button
+                                    className="text-gray-400 hover:text-gray-500"
+                                    onClick={() => handleOpenModal(investment)}
+                                >
                                     <FiMoreVertical className="h-5 w-5" />
                                 </button>
                             </td>
@@ -147,6 +237,7 @@ const InvestmentsBreakdown = () => {
                 </button>
 
                 <div className="inline-flex shadow-sm">
+                    {/* Pagination buttons - simplified for clarity */}
                     <button
                         className="inline-flex items-center justify-center w-8 h-8 border border-gray-300 rounded-l-md text-sm font-medium bg-green-500 text-white"
                     >
@@ -183,6 +274,15 @@ const InvestmentsBreakdown = () => {
                     <FiChevronRight className="h-4 w-4 ml-1" />
                 </button>
             </div>
+
+            {/* Investment Details Modal */}
+            {selectedInvestment && (
+                <InvestmentDetailsModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    investment={selectedInvestment}
+                />
+            )}
         </div>
     );
 };
