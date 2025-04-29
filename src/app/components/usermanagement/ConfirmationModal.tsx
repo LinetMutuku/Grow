@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
@@ -41,50 +40,75 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirmResult, title, actionText
     return (
         <>
             {isOpen && !reasonModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-[9999]">
-                    <div
-                        ref={modalRef}
-                        className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative border border-gray-100"
-                        style={{ boxShadow: '0 10px 40px rgba(0,0,0,0.08)' }}
-                    >
-                        <div className="absolute -top-3 -right-3 bg-white rounded-full p-1 shadow-md">
+                <div className="fixed inset-0 z-[60] overflow-y-auto">
+                    {/* Overlay - Added the semi-transparent black background */}
+                    <div className="fixed inset-0 bg-black/30" onClick={onClose} />
+
+                    {/* Dialog content container - Added flex centering */}
+                    <div className="flex min-h-full items-center justify-center p-4">
+                        <div
+                            ref={modalRef}
+                            className="relative bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all"
+                        >
+                            {/* Close button - Styled to match your existing modals */}
                             <button
                                 onClick={onClose}
-                                className="text-gray-400 hover:text-gray-600 bg-white rounded-full flex items-center justify-center h-8 w-8 transition-colors"
+                                className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
-                        </div>
 
-                        <div className="p-8 text-center">
-                            {actionType === 'suspend' ? (
-                                <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-orange-50 mb-6 border-4 border-orange-100">
-                                    <svg className="h-12 w-12 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                    </svg>
-                                </div>
-                            ) : (
-                                <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-50 mb-6 border-4 border-green-100">
-                                    <svg className="h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                            )}
+                            {/* Content */}
+                            <div className="p-6 text-center">
+                                {actionType === 'suspend' ? (
+                                    <div className="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-[#FFF8E6] mb-4">
+                                        <svg
+                                            className="w-8 h-8 text-[#A07B00]"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                            />
+                                        </svg>
+                                    </div>
+                                ) : (
+                                    <div className="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-[#E8F5E9] mb-4">
+                                        <svg
+                                            className="w-8 h-8 text-[#2E7D32]"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                            />
+                                        </svg>
+                                    </div>
+                                )}
 
-                            <p className="text-gray-800 text-xl font-medium mb-8">
-                                {title || "Are you sure you want to reactivate the selected account?"}
-                            </p>
+                                {/* Message */}
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                    {title || "Are you sure you want to reactivate the selected account?"}
+                                </h3>
 
-                            <div className="flex flex-col gap-3">
+                                {/* Confirm Button */}
                                 <button
                                     onClick={handleConfirm}
-                                    className={`w-full py-3 px-6 ${
+                                    className={`w-full mt-6 px-4 py-3 ${
                                         actionType === 'reactivate'
-                                            ? 'bg-green-600 hover:bg-green-700'
-                                            : 'bg-orange-500 hover:bg-orange-600'
-                                    } text-white text-base font-medium rounded-md transition-colors duration-200`}
+                                            ? 'bg-[#2E7D32] hover:bg-[#1B5E20]'
+                                            : 'bg-[#F59E0B] hover:bg-[#D97706]'
+                                    } text-white rounded-lg font-medium transition-colors`}
                                 >
                                     {actionText || "Yes, Reactivate User"}
                                 </button>

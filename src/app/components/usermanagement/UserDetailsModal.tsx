@@ -42,7 +42,11 @@ const UserDetailsModal = ({ isOpen, onClose, user }) => {
 
     return (
         <>
-            <div className="fixed inset-0 z-50 overflow-y-auto pointer-events-none">
+            <div className="fixed inset-0 z-[60] overflow-y-auto">
+                {/* Added semi-transparent black overlay */}
+                <div className="fixed inset-0 bg-black/30" onClick={onClose} />
+
+                {/* Dialog content container - Added flex centering */}
                 <div className="flex min-h-screen items-center justify-center p-4">
                     <div className="relative bg-white rounded-lg shadow-2xl max-w-2xl w-full transform transition-all pointer-events-auto">
                         {/* Header */}
