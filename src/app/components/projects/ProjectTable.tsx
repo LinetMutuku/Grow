@@ -32,21 +32,7 @@ const ProjectTable = () => {
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-    // Get status color
-    const getStatusColor = (status: string) => {
-        switch (status.toLowerCase()) {
-            case 'active':
-                return 'text-blue-500';
-            case 'completed':
-                return 'text-green-500';
-            case 'pending':
-                return 'text-yellow-500';
-            default:
-                return 'text-gray-500';
-        }
-    };
-
-    // Get status badge
+    // Get status badge - removed the unused getStatusColor function
     const getStatusBadge = (status: string) => {
         switch (status.toLowerCase()) {
             case 'active':

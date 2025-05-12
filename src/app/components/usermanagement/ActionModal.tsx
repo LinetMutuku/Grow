@@ -1,10 +1,9 @@
-
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import ConfirmationModal from './ConfirmationModal';
+import React, { useRef, useEffect } from 'react';
+// Removed the unused imports: useState and ConfirmationModal
 
-const ActionModal = ({ isOpen, onClose, onAction, userStatus }) => {
+const ActionModal = ({ isOpen, onClose, onAction }) => {
     const modalRef = useRef(null);
 
     // Close modal when clicking outside
@@ -84,7 +83,6 @@ const ActionModal = ({ isOpen, onClose, onAction, userStatus }) => {
                     </div>
                 </div>
             )}
-
         </>
     );
 };

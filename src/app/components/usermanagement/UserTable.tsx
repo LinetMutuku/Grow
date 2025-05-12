@@ -1,14 +1,24 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FiChevronLeft, FiChevronRight, FiMoreVertical } from 'react-icons/fi';
 import ActionModal from './ActionModal';
 import ConfirmationModal from './ConfirmationModal';
 import BulkActionModal from './BulkActionModal';
 import UserDetailsModal from './UserDetailsModal';
 
+// Define types for our data
+interface User {
+    id: number;
+    regNo: string;
+    name: string;
+    email: string;
+    investments: number;
+    dateRegistered: string;
+}
+
 // Sample user data
-const usersData = [
+const usersData: User[] = [
     { id: 1, regNo: '67890', name: 'April Dave', email: 'April@gmail.com', investments: 2, dateRegistered: 'Jan 05, 2025' },
     { id: 2, regNo: '12345', name: 'Rice Black', email: 'Rice@gmail.com', investments: 25, dateRegistered: 'Jan 05, 2025' },
     { id: 3, regNo: '23456', name: 'Cocoa Sheen', email: 'Cocoa@gmail.com', investments: 7, dateRegistered: 'Jan 05, 2025' },
@@ -19,30 +29,25 @@ const usersData = [
     { id: 8, regNo: '78901', name: 'Piper Mills', email: 'Mills@gmail.com', investments: 2, dateRegistered: 'Jan 05, 2025' },
 ];
 
-const UserTable = () => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [selectedUsers, setSelectedUsers] = useState([]);
-    // State for action modal
-    const [actionModalOpen, setActionModalOpen] = useState(null);
-    // Add state to track if confirmation/reason modals should be shown directly
-    const [showConfirmation, setShowConfirmation] = useState(false);
-    const [actionType, setActionType] = useState(null);
-    // State for bulk action modal
-    const [showBulkActionModal, setShowBulkActionModal] = useState(false);
-    // State for user details modal
-    const [showUserDetailsModal, setShowUserDetailsModal] = useState(false);
-    const [selectedUserDetails, setSelectedUserDetails] = useState(null);
+const UserTable: React.FC = () => {
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+    const [actionModalOpen, setActionModalOpen] = useState<number | null>(null);
+    const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+    const [actionType, setActionType] = useState<string | null>(null);
+    const [showBulkActionModal, setShowBulkActionModal] = useState<boolean>(false);
+    const [showUserDetailsModal, setShowUserDetailsModal] = useState<boolean>(false);
+    const [selectedUserDetails, setSelectedUserDetails] = useState<User | null>(null);
 
     const usersPerPage = 8;
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = usersData.slice(indexOfFirstUser, indexOfLastUser);
-
     const totalPages = Math.ceil(usersData.length / usersPerPage);
 
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const paginate = (pageNumber: number): void => setCurrentPage(pageNumber);
 
-    const toggleSelectAll = () => {
+    const toggleSelectAll = (): void => {
         if (selectedUsers.length === currentUsers.length) {
             setSelectedUsers([]);
         } else {
@@ -50,7 +55,7 @@ const UserTable = () => {
         }
     };
 
-    const toggleSelectUser = (userId) => {
+    const toggleSelectUser = (userId: number): void => {
         if (selectedUsers.includes(userId)) {
             setSelectedUsers(selectedUsers.filter(id => id !== userId));
         } else {
@@ -58,70 +63,53 @@ const UserTable = () => {
         }
     };
 
-    // Action modal handlers
-    const handleActionClick = (userId) => {
-        // Close if already open, open if closed
+    const handleActionClick = (userId: number): void => {
         setActionModalOpen(actionModalOpen === userId ? null : userId);
     };
 
-    const handleAction = (action, reason) => {
+    const handleAction = (action: string, reason?: string): void => {
         const userId = actionModalOpen;
         console.log(`Performing action: ${action} on user: ${userId}, reason: ${reason}`);
 
-        // Ensure all modals are properly handled
         if (action === 'reactivate' || action === 'suspend') {
-            // Store the action type to be used in ConfirmationModal
             setActionType(action);
-            // Show confirmation modal
             setShowConfirmation(true);
-        } else {
-            // For view details or other actions
-            console.log(`Performing direct action: ${action} on user: ${userId}`);
+        } else if (action === 'viewDetails') {
+            const user = usersData.find(u => u.id === userId);
+            if (user) {
+                setSelectedUserDetails(user);
+                setShowUserDetailsModal(true);
+            }
         }
 
-        // Here you would implement the actual functionality based on the action
-        // For example, call an API to suspend/reactivate the user
-
-        // Close the action modal but not necessarily other modals
         setActionModalOpen(null);
     };
 
-    // Handler for when the confirmation is complete
-    const handleConfirmComplete = (confirmed, reason) => {
+    const handleConfirmComplete = (confirmed: boolean, reason?: string): void => {
         console.log(`Confirmation complete: ${confirmed}, reason: ${reason}`);
         setShowConfirmation(false);
 
         if (confirmed && reason) {
-            // Perform the actual action with the reason
             console.log(`Performing ${actionType} action with reason: ${reason}`);
-            // Call API here
+            // API call would go here
         }
     };
 
-    // Bulk action handlers
-    const handleBulkActionClick = () => {
+    const handleBulkActionClick = (): void => {
         setShowBulkActionModal(true);
     };
 
-    const handleBulkAction = (action) => {
+    const handleBulkAction = (action: string): void => {
         console.log(`Performing bulk action: ${action} on users:`, selectedUsers);
-        // Here you would implement the actual bulk action
-        // For example, call an API to handle bulk operations
-
-        // Close the modal
         setShowBulkActionModal(false);
-
-        // Optionally, clear the selection after action
-        // setSelectedUsers([]);
     };
 
-    // User details modal handlers
-    const handleViewUserDetails = (user) => {
+    const handleViewUserDetails = (user: User): void => {
         setSelectedUserDetails(user);
         setShowUserDetailsModal(true);
     };
 
-    const handleCloseUserDetails = () => {
+    const handleCloseUserDetails = (): void => {
         setShowUserDetailsModal(false);
         setSelectedUserDetails(null);
     };
@@ -210,7 +198,6 @@ const UserTable = () => {
                                         isOpen={true}
                                         onClose={() => setActionModalOpen(null)}
                                         onAction={handleAction}
-                                        userStatus="active" // You can pass the actual user status here
                                     />
                                 )}
                             </td>
@@ -220,7 +207,6 @@ const UserTable = () => {
                 </table>
             </div>
 
-            {/* Confirmation Modal - Rendered at the root level */}
             {showConfirmation && (
                 <ConfirmationModal
                     isOpen={showConfirmation}
@@ -236,24 +222,25 @@ const UserTable = () => {
                 />
             )}
 
-            {/* User Details Modal */}
-            <UserDetailsModal
-                isOpen={showUserDetailsModal}
-                onClose={handleCloseUserDetails}
-                user={selectedUserDetails}
-            />
+            {selectedUserDetails && (
+                <UserDetailsModal
+                    isOpen={showUserDetailsModal}
+                    onClose={handleCloseUserDetails}
+                    user={selectedUserDetails}
+                />
+            )}
 
             <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                 <div className="flex-1 flex justify-between sm:hidden">
                     <button
-                        onClick={() => paginate(currentPage - 1)}
+                        onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
                         disabled={currentPage === 1}
                         className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                     >
                         Previous
                     </button>
                     <button
-                        onClick={() => paginate(currentPage + 1)}
+                        onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}
                         disabled={currentPage === totalPages}
                         className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                     >
@@ -278,7 +265,6 @@ const UserTable = () => {
                                 <FiChevronLeft className="h-5 w-5" />
                             </button>
 
-                            {/* Pagination buttons */}
                             {[1, 2, 3].map(num => (
                                 <button
                                     key={num}
@@ -331,7 +317,6 @@ const UserTable = () => {
                         Bulk Action
                     </button>
 
-                    {/* Bulk Action Modal - Positioned relative to the button */}
                     {showBulkActionModal && (
                         <BulkActionModal
                             isOpen={showBulkActionModal}
