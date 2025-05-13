@@ -2,11 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../common/Sidebar';
 import Header from '../../common/Header';
-import Image from 'next/image';
 import ExportBtn from '@/app/components/ExportBtn';
 import SearchForm from '@/app/components/SearchForm';
+import ActionBtn from '@/app/components/reports/ActionBtn';
+import DonutChart from '@/app/components/reports/DonutChart';
+import BarChartt from '@/app/components/reports/BarChart';
 
-const Reports = () => {
+
+const Reports =   () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -67,31 +70,42 @@ const Reports = () => {
                 />
                 {/* ------ */}
 
-                {/* User Management content */}
+                {/* Report Management content */}
                 <div className="px-6">
 
                     {/* Key performance insite*/}
                     <div className='text-xl  text-[#1E1E1ECC] font-medium my-5 dm-sans-500'> Key Performance Insights</div>
-
-                    <div className='flex mt-10'>
-                      <div className='w-full md:w-3/12 border-r border-[#0000001A]'>
-                        <h3 className='text-xs font-semibold text-[#00000080] manrope-500'>TOTAL FUNDS RAISED</h3>
+                    <div className='flex mt-10 border-b border-dotted border-blue-500'>
+                      <div className='w-full md:w-3/12 border-r border-[#0000001A] mb-5'>
+                        <h3 className='text-xs font-semibold text-[#00000080] manrope-500 tracking-[1.2px]'>TOTAL FUNDS RAISED</h3>
                         <h1 className='text-xl text-[#1E1E1ECC] font-medium mt-[6px] dm-sans-500'>₦250,000,000</h1>
                       </div>
-                      <div className='w-full md:w-3/12 border-r border-[#0000001A] pl-6'>
-                        <h3 className='text-xs font-semibold text-[#00000080] manrope-500 '>AVG. INVESTMENT  PER PROJECT</h3>
+                      <div className='w-full md:w-3/12 border-r border-[#0000001A] pl-6 mb-5'>
+                        <h3 className='text-xs font-semibold text-[#00000080] manrope-500 tracking-[1.2px]'>AVG. INVESTMENT  PER PROJECT</h3>
                         <h1 className='text-xl text-[#1E1E1ECC] font-medium mt-[6px] dm-sans-500'>₦1,500,000</h1>
                       </div>
-                      <div className='w-full md:w-3/12 border-r border-[#0000001A] pl-6 manrope-500'>
-                        <h3 className='text-xs font-semibold text-[#00000080]'>USER GROWTH RATE</h3>
+                      <div className='w-full md:w-3/12 border-r border-[#0000001A] pl-6 mb-5'>
+                        <h3 className='text-xs font-semibold text-[#00000080] manrope-500 tracking-[1.2px]'>USER GROWTH RATE</h3>
                         <h1 className='text-xl text-[#1E1E1ECC] font-medium mt-[6px] dm-sans-500'>+15%</h1>
                       </div>
-                      <div className='w-full md:w-3/12 border-r border-[#0000001A] pl-6 manrope-500'>
-                        <h3 className='text-xs font-semibold text-[#00000080]'>PROJECT SUCCESS RATE</h3>
+                      <div className='w-full md:w-3/12 border-[#0000001A] pl-6  mb-5'>
+                        <h3 className='text-xs font-semibold text-[#00000080] manrope-500 tracking-[1.2px]'>PROJECT SUCCESS RATE</h3>
                         <h1 className='text-xl text-[#1E1E1ECC] font-medium mt-[6px] dm-sans-500'>95%</h1>
                       </div>
                     </div>
                     {/* --------------------- */}
+
+                    {/* charts----------- */}
+                    <div className="flex gap-3 flex-wrap md:flex-nowrap mt-8">
+                    <div className="w-full md:w-7/12 border border-gray-200 rounded-md px-3 h-[330px] md:h-[340px] py-4">
+                       <BarChartt/>
+                     </div>
+                     <div className="w-full md:w-5/12 border border-gray-200 rounded-md px-3 h-[340px] py-4">
+                       <DonutChart/>
+                     </div> 
+                    </div>
+                     
+                    {/* ----------------- */}
 
                     {/* Report breakdown */}
                     <div className="mt-10 ">
@@ -120,12 +134,12 @@ const Reports = () => {
                             </thead>
                             <tbody className='text-[#4F5144]'>
                                 {reportData.map((item)=>(
-                                <tr key={item.id}>
+                                <tr key={item.id} className="hover:bg-gray-50 border-b border-gray-200">
                                   <td className='dm-sans-400 text-sm py-4 pl-6'>{item.reportType}</td>
                                   <td className='dm-sans-400 text-sm py-4 pl-6'>{item.dateRange}</td>
                                   <td className='dm-sans-400 text-sm py-4 pl-6'>{item.generatedBY}</td>
                                   <td className='dm-sans-400 text-sm py-4 pl-6'>{item.exportFormat}</td>
-                                  <td className='dm-sans-400 text-sm py-4 pl-6'><Image src="/reports/horizontal-dot.svg" alt='' width={3} height={17} /></td>
+                                  <td className='dm-sans-400 text-sm py-4 pl-6'><ActionBtn/></td>
                                 </tr> 
                                 ))}
                             </tbody>
