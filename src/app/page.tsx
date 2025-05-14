@@ -33,12 +33,12 @@ export default function Home() {
         return <SignUpSelection />;
     } else if (pathname === '/admin-signup') {
         return <AdminSignUp />;
-    } else if (pathname === '/forgot-password') {
-        return <ForgotPassword />;
-    } else if (pathname === '/verify') {
-        return <VerificationCode />;
-    } else if (pathname === '/reset-password') {
-        return <ResetPassword />;
+    // } else if (pathname === '/forgot-password') {
+    //     return <ForgotPassword />;
+    // } else if (pathname === '/verify') {
+    //     return <VerificationCode />;
+    // } else if (pathname === '/reset-password') {
+    //     return <ResetPassword />;
     }
 
     // Default to sign-up page for the home route

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { FiDownload, FiEye, FiX } from 'react-icons/fi';
+import { FiDownload, FiX } from 'react-icons/fi';
+// Removed the unused FiEye import
 
 interface IssueDetailsModalProps {
     isOpen: boolean;

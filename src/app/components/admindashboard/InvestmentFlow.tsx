@@ -30,7 +30,13 @@ const data = [
 
 type TimeFilter = 'today' | 'this_week' | 'see_data';
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface TooltipProps {
+    active?: boolean;
+    payload?: Array<{value: number; name?: string}>;
+    label?: string;
+}
+
+const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
     if (active && payload && payload.length) {
         return (
             <div className="bg-white p-2 shadow-md rounded border border-gray-200 text-xs">
@@ -44,6 +50,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return null;
 };
 
+interface DotProps {
+    cx: number;
+    cy: number;
+    index: number;
+}
+
 const InvestmentFlow = () => {
     const [timeFilter, setTimeFilter] = useState<TimeFilter>('this_week');
 
@@ -52,7 +64,7 @@ const InvestmentFlow = () => {
     };
 
     // Custom label component for the data point
-    const CustomizedDot = (props: any) => {
+    const CustomizedDot = (props: DotProps) => {
         const { cx, cy, index } = props;
 
         // Only add the custom label at JUN (index 5)

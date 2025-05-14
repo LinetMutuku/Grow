@@ -139,21 +139,7 @@ const ResolvedIssues = () => {
         }
     };
 
-    // Priority badge colors
-    const getPriorityBadgeClass = (priority) => {
-        switch (priority) {
-            case 'Critical':
-                return 'bg-red-100 text-red-800 border border-red-200';
-            case 'High':
-                return 'bg-orange-100 text-orange-800 border border-orange-200';
-            case 'Medium':
-                return 'bg-yellow-100 text-yellow-800 border border-yellow-200';
-            case 'Low':
-                return 'bg-green-100 text-green-800 border border-green-200';
-            default:
-                return 'bg-gray-100 text-gray-800 border border-gray-200';
-        }
-    };
+    // Removed the unused getPriorityBadgeClass function that was causing the error
 
     // Filter issues based on search term
     const filteredIssues = resolvedIssues.filter(issue => {

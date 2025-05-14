@@ -52,7 +52,6 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
             <div
                 className="bg-white rounded-lg shadow-lg w-[500px] max-w-[90%] overflow-hidden"
             >
-                >
                 <div className="flex items-center justify-between p-3 border-b border-gray-200">
                     <h2 className="text-base font-medium text-green-600">Transaction Details</h2>
                     <button
@@ -163,8 +162,8 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
                     </div>
                 </div>
             </div>
-</div>
-);
+        </div>
+    );
 };
 
 export default TransactionDetailsModal;

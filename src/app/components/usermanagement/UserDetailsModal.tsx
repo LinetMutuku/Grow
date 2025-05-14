@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FiX, FiDownload } from 'react-icons/fi';
 import ConfirmUserModal from './ConfirmUserModal';
 import RejectReasonModal from './RejectReasonModal';
+import Image from 'next/image'; // Import Next Image component
 
 const UserDetailsModal = ({ isOpen, onClose, user }) => {
     const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -64,11 +65,16 @@ const UserDetailsModal = ({ isOpen, onClose, user }) => {
                         <div className="p-6">
                             {/* User Info */}
                             <div className="flex items-center space-x-4 mb-6">
-                                <img
-                                    src="/api/placeholder/56/56"
-                                    alt="User Avatar"
-                                    className="w-14 h-14 rounded-full object-cover"
-                                />
+                                {/* Replaced img with Next.js Image component */}
+                                <div className="relative w-14 h-14 rounded-full overflow-hidden">
+                                    <Image
+                                        src="/api/placeholder/56/56"
+                                        alt="User Avatar"
+                                        width={56}
+                                        height={56}
+                                        className="object-cover"
+                                    />
+                                </div>
                                 <div>
                                     <h3 className="text-xl font-semibold text-gray-900">{user?.name || 'Adeolu Nelson'}</h3>
                                     <p className="text-gray-500">{user?.email || 'adeolu@gmail.com'}</p>
