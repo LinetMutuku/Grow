@@ -113,7 +113,7 @@ const Sidebar: React.FC<SidebarProps> = ({ companyName = "GROW" }) => {
         event.stopPropagation();
     };
 
-    // Close mobile menu when clicking outside
+    // Handle clicks outside the sidebar on mobile
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (isMobileView && mobileMenuOpen) {
@@ -149,10 +149,10 @@ const Sidebar: React.FC<SidebarProps> = ({ companyName = "GROW" }) => {
                 </button>
             )}
 
-            {/* Overlay for mobile */}
+            {/* Touch-capture overlay for mobile (completely transparent) */}
             {isMobileView && mobileMenuOpen && (
                 <div
-                    className="fixed inset-0 bg-black bg-opacity-30 z-20"
+                    className="fixed inset-0 bg-transparent z-20"
                     onClick={toggleMobileMenu}
                 />
             )}
@@ -164,7 +164,9 @@ const Sidebar: React.FC<SidebarProps> = ({ companyName = "GROW" }) => {
                 ${isMobileView
                     ? mobileMenuOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64'
                     : collapsed ? 'w-20' : 'w-64'
-                }`}
+                }
+                ${isMobileView && mobileMenuOpen ? 'bg-white' : ''}`}
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.99)' }}
             >
                 {/* Logo Header */}
                 <div className="h-20 flex items-center justify-between px-4 border-b border-gray-200">
@@ -350,19 +352,19 @@ const Sidebar: React.FC<SidebarProps> = ({ companyName = "GROW" }) => {
                 <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-gray-200 bg-gray-50">
                     <div className="relative">
                         <div className="w-full flex items-center p-1">
-                            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center relative overflow-hidden">
-                                <Image
-                                    src="/aisha.jpg"
-                                    alt="Profile"
-                                    width={40}
-                                    height={40}
-                                    className="object-cover"
-                                    onError={(e) => {
-                                        const target = e.target as HTMLImageElement;
-                                        target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
-                                    }}
-                                />
-                            </div>
+                            {/*<div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center relative overflow-hidden">*/}
+                            {/*    /!*<Image*!/*/}
+                            {/*    /!*    src="#"*!/*/}
+                            {/*    /!*    alt="Profile"*!/*/}
+                            {/*    /!*    width={40}*!/*/}
+                            {/*    /!*    height={40}*!/*/}
+                            {/*    /!*    className="object-cover"*!/*/}
+                            {/*    /!*    onError={(e) => {*!/*/}
+                            {/*    /!*        const target = e.target as HTMLImageElement;*!/*/}
+                            {/*    /!*        target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';*!/*/}
+                            {/*    /!*    }}*!/*/}
+                                {/*/>*/}
+                            {/*</div>*/}
 
                             {!collapsed && (
                                 <>
