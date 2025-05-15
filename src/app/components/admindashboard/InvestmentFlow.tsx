@@ -64,7 +64,7 @@ const InvestmentFlow = () => {
     };
 
     // Custom label component for the data point
-    const CustomizedDot = (props: DotProps) => {
+    const CustomizedDot = (props: any) => {
         const { cx, cy, index } = props;
 
         // Only add the custom label at JUN (index 5)
@@ -165,7 +165,7 @@ const InvestmentFlow = () => {
                             type="monotone"
                             dataKey="investment"
                             stroke="transparent"
-                            dot={<CustomizedDot />}
+                            dot={CustomizedDot}
                             activeDot={false}
                         />
                     </LineChart>
