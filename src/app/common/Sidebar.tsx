@@ -340,12 +340,16 @@ const Sidebar = ({ companyName = "GROW" }) => {
                     <div className="relative">
                         <div className="w-full flex items-center p-1">
                             <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center relative overflow-hidden">
-                                <img
+                                {/* Replace img with Next.js Image component */}
+                                <Image
                                     src="/aisha.jpg"
                                     alt="Profile"
-                                    className="w-full h-full object-cover"
+                                    width={40}
+                                    height={40}
+                                    className="object-cover"
                                     onError={(e) => {
-                                        const target = e.target;
+                                        // Use a type assertion here
+                                        const target = e.target as HTMLImageElement;
                                         target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
                                     }}
                                 />

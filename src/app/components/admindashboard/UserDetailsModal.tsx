@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { FiX, FiDownload } from 'react-icons/fi';
 import { SuspendConfirmationDialog, DeleteConfirmationDialog } from './ConfirmationDialog';
 
@@ -63,10 +64,13 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ isOpen, onClose, us
                     <div className="flex items-center justify-between p-6 border-b border-gray-100">
                         <div className="flex items-center space-x-4">
                             <div className="w-14 h-14 rounded-full overflow-hidden">
-                                <img
+                                {/* Replace img with Next.js Image component */}
+                                <Image
                                     src="https://api.dicebear.com/7.x/avataaars/svg?seed=April"
                                     alt={user.name}
-                                    className="w-full h-full object-cover"
+                                    width={56}
+                                    height={56}
+                                    className="object-cover"
                                 />
                             </div>
                             <div>

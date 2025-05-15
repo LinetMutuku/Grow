@@ -76,3 +76,40 @@
   --foreground: oklch(0.145 0 0);
 }
 
+
+/* Add this to your globals.css or create a new styles.css file */
+
+/* Make the main content area flow around the sidebar */
+body {
+  overflow-x: hidden;
+}
+
+/* Fix sidebar positioning */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 30;
+}
+
+/* Adjust main content area based on sidebar state */
+@media (min-width: 768px) {
+  /* When sidebar is expanded */
+  .sidebar:not(.w-20) ~ #main-content-area {
+    margin-left: 16rem; /* 64 (256px) */
+  }
+
+  /* When sidebar is collapsed */
+  .sidebar.w-20 ~ #main-content-area {
+    margin-left: 5rem; /* 20 (80px) */
+  }
+}
+
+/* Mobile view */
+@media (max-width: 767px) {
+  #main-content-area {
+    margin-left: 0 !important;
+  }
+}
+
