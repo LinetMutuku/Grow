@@ -21,6 +21,7 @@ import {
     FiChevronDown
 } from 'react-icons/fi';
 
+// Define menu items
 const menuItems = [
     {
         name: 'Dashboard',
@@ -39,14 +40,23 @@ const menuItems = [
     { name: 'Audit Log', icon: FiList, path: '/admindashboard/audit' },
 ];
 
-const Sidebar = ({ companyName = "GROW" }) => {
+interface SidebarProps {
+    companyName?: string;
+}
+
+// Define a proper type for expandedMenus
+interface ExpandedMenusState {
+    [key: string]: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ companyName = "GROW" }) => {
     const pathname = usePathname();
     const router = useRouter();
     const [collapsed, setCollapsed] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [isMobileView, setIsMobileView] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [expandedMenus, setExpandedMenus] = useState({});
+    const [expandedMenus, setExpandedMenus] = useState<ExpandedMenusState>({});
 
     useEffect(() => {
         const handleResize = () => {
@@ -60,7 +70,7 @@ const Sidebar = ({ companyName = "GROW" }) => {
         window.addEventListener('resize', handleResize);
 
         // Check if any menu item should be expanded based on current path
-        const expandedState = {};
+        const expandedState: ExpandedMenusState = {};
         menuItems.forEach(item => {
             if (item.hasChildren) {
                 const shouldExpand = item.children.some(child =>
@@ -85,9 +95,10 @@ const Sidebar = ({ companyName = "GROW" }) => {
         setMobileMenuOpen(!mobileMenuOpen);
     };
 
-    const toggleMenuExpansion = (event, menuName, menuPath) => {
+    const toggleMenuExpansion = (event: React.MouseEvent, menuName: string, menuPath: string) => {
         // If clicking on the chevron or main part of the button, toggle expansion
-        if (!event.target.closest('.menu-chevron') && !event.target.classList.contains('menu-chevron')) {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.menu-chevron') && !target.classList.contains('menu-chevron')) {
             // Navigate to the menu path
             router.push(menuPath);
         }
@@ -104,15 +115,16 @@ const Sidebar = ({ companyName = "GROW" }) => {
 
     // Close mobile menu when clicking outside
     useEffect(() => {
-        const handleClickOutside = (event) => {
+        const handleClickOutside = (event: MouseEvent) => {
             if (isMobileView && mobileMenuOpen) {
                 const sidebar = document.querySelector('.sidebar');
                 const menuButton = document.querySelector('.mobile-menu-button');
+                const target = event.target as HTMLElement;
 
                 if (sidebar &&
-                    !sidebar.contains(event.target) &&
+                    !sidebar.contains(target) &&
                     menuButton &&
-                    !menuButton.contains(event.target)) {
+                    !menuButton.contains(target)) {
                     setMobileMenuOpen(false);
                 }
             }
@@ -158,7 +170,6 @@ const Sidebar = ({ companyName = "GROW" }) => {
                 <div className="h-20 flex items-center justify-between px-4 border-b border-gray-200">
                     <div className="flex items-center">
                         <div className="flex-shrink-0 mr-3">
-                            {/* Using the SVG from public folder */}
                             <Image
                                 src="/grow-logo.svg"
                                 alt="GROW Logo"
@@ -340,7 +351,6 @@ const Sidebar = ({ companyName = "GROW" }) => {
                     <div className="relative">
                         <div className="w-full flex items-center p-1">
                             <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center relative overflow-hidden">
-                                {/* Replace img with Next.js Image component */}
                                 <Image
                                     src="/aisha.jpg"
                                     alt="Profile"
@@ -348,7 +358,6 @@ const Sidebar = ({ companyName = "GROW" }) => {
                                     height={40}
                                     className="object-cover"
                                     onError={(e) => {
-                                        // Use a type assertion here
                                         const target = e.target as HTMLImageElement;
                                         target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
                                     }}
@@ -378,22 +387,22 @@ const Sidebar = ({ companyName = "GROW" }) => {
                         {showUserMenu && (
                             <div className={`absolute bottom-full ${collapsed ? 'left-0' : 'left-1/2 -translate-x-1/2'} mb-2 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-200 transform transition-all duration-200 ease-out z-40`}>
                                 <Link href="/profile" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
-                  <span className="h-6 w-6 mr-2 rounded-full bg-gray-100 flex items-center justify-center">
-                    <FiUsers size={12} />
-                  </span>
+                                    <span className="h-6 w-6 mr-2 rounded-full bg-gray-100 flex items-center justify-center">
+                                        <FiUsers size={12} />
+                                    </span>
                                     Profile
                                 </Link>
                                 <Link href="/settings" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
-                  <span className="h-6 w-6 mr-2 rounded-full bg-gray-100 flex items-center justify-center">
-                    <FiSettings size={12} />
-                  </span>
+                                    <span className="h-6 w-6 mr-2 rounded-full bg-gray-100 flex items-center justify-center">
+                                        <FiSettings size={12} />
+                                    </span>
                                     Settings
                                 </Link>
                                 <div className="my-1 border-t border-gray-100"></div>
                                 <Link href="/logout" className="flex items-center px-4 py-2 text-sm text-red-500 hover:bg-red-50">
-                  <span className="h-6 w-6 mr-2 rounded-full bg-red-100 flex items-center justify-center text-red-500">
-                    <FiLogOut size={12} />
-                  </span>
+                                    <span className="h-6 w-6 mr-2 rounded-full bg-red-100 flex items-center justify-center text-red-500">
+                                        <FiLogOut size={12} />
+                                    </span>
                                     Logout
                                 </Link>
                             </div>
