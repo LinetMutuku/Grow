@@ -11,7 +11,7 @@ const data = [
 ];
 
 const BarChartt = () => {
-    // Removed the unused renderLegend function to fix ESLint error
+    // Removed the unused renderLegend function
 
     return (
         <div style={{ width: '100%', height: 270 }}>

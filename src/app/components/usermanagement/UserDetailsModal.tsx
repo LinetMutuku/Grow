@@ -1,12 +1,31 @@
+'use client';
+
 import React, { useState } from 'react';
 import { FiX, FiDownload } from 'react-icons/fi';
 import ConfirmUserModal from './ConfirmUserModal';
 import RejectReasonModal from './RejectReasonModal';
-import Image from 'next/image'; // Import Next Image component
+import Image from 'next/image';
 
-const UserDetailsModal = ({ isOpen, onClose, user }) => {
+// Define TypeScript interfaces
+interface User {
+    name?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    occupation?: string;
+    regDate?: string;
+    endDate?: string;
+}
+
+interface UserDetailsModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    user?: User;
+}
+
+const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ isOpen, onClose, user }) => {
     const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const [confirmType, setConfirmType] = useState('verify');
+    const [confirmType, setConfirmType] = useState<'verify' | 'reject'>('verify');
     const [showRejectReasonModal, setShowRejectReasonModal] = useState(false);
 
     if (!isOpen) return null;
@@ -34,7 +53,7 @@ const UserDetailsModal = ({ isOpen, onClose, user }) => {
         }
     };
 
-    const handleRejectSubmit = (reason) => {
+    const handleRejectSubmit = (reason: string) => {
         // Call API to reject user with reason
         console.log('Rejecting user with reason:', reason);
         setShowRejectReasonModal(false);
@@ -65,7 +84,7 @@ const UserDetailsModal = ({ isOpen, onClose, user }) => {
                         <div className="p-6">
                             {/* User Info */}
                             <div className="flex items-center space-x-4 mb-6">
-                                {/* Replaced img with Next.js Image component */}
+                                {/* Using Next.js Image component */}
                                 <div className="relative w-14 h-14 rounded-full overflow-hidden">
                                     <Image
                                         src="/api/placeholder/56/56"
@@ -78,7 +97,7 @@ const UserDetailsModal = ({ isOpen, onClose, user }) => {
                                 <div>
                                     <h3 className="text-xl font-semibold text-gray-900">{user?.name || 'Adeolu Nelson'}</h3>
                                     <p className="text-gray-500">{user?.email || 'adeolu@gmail.com'}</p>
-                                    <p className="text-gray-500">+234 701 123 4567</p>
+                                    <p className="text-gray-500">{user?.phone || '+234 701 123 4567'}</p>
                                 </div>
                             </div>
 
@@ -87,14 +106,14 @@ const UserDetailsModal = ({ isOpen, onClose, user }) => {
                                 <div className="border border-gray-200 rounded-lg p-4">
                                     <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">ACCOUNT STATUS</p>
                                     <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-50 text-yellow-700">
-                    Pending
-                  </span>
+                                        Pending
+                                    </span>
                                 </div>
                                 <div className="border border-gray-200 rounded-lg p-4">
                                     <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">USER STATUS</p>
                                     <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-50 text-yellow-700">
-                    Pending
-                  </span>
+                                        Pending
+                                    </span>
                                 </div>
                                 <div className="border border-gray-200 rounded-lg p-4 bg-yellow-50">
                                     <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">KNOWN ISSUES</p>
@@ -125,11 +144,11 @@ const UserDetailsModal = ({ isOpen, onClose, user }) => {
                                     <div className="space-y-2">
                                         <div className="flex">
                                             <span className="text-gray-500 w-24">Address</span>
-                                            <span className="text-gray-900">Lagos, Nigeria</span>
+                                            <span className="text-gray-900">{user?.address || 'Lagos, Nigeria'}</span>
                                         </div>
                                         <div className="flex">
                                             <span className="text-gray-500 w-24">Occupation:</span>
-                                            <span className="text-gray-900">Product Designer</span>
+                                            <span className="text-gray-900">{user?.occupation || 'Product Designer'}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -138,11 +157,11 @@ const UserDetailsModal = ({ isOpen, onClose, user }) => {
                                     <div className="space-y-2">
                                         <div className="flex">
                                             <span className="text-gray-500 w-24">Reg Date:</span>
-                                            <span className="text-gray-900">March 1, 2025</span>
+                                            <span className="text-gray-900">{user?.regDate || 'March 1, 2025'}</span>
                                         </div>
                                         <div className="flex">
                                             <span className="text-gray-500 w-24">End Date:</span>
-                                            <span className="text-gray-900">December 31, 2025</span>
+                                            <span className="text-gray-900">{user?.endDate || 'December 31, 2025'}</span>
                                         </div>
                                     </div>
                                 </div>
