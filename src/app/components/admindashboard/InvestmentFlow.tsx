@@ -54,6 +54,7 @@ interface DotProps {
     cx: number;
     cy: number;
     index: number;
+    key: string | number;
 }
 
 const InvestmentFlow = () => {
@@ -65,13 +66,13 @@ const InvestmentFlow = () => {
 
     // Custom label component for the data point
     const CustomizedDot = (props: any) => {
-        const { cx, cy, index } = props;
+        const { cx, cy, index, key } = props;
 
         // Only add the custom label at JUN (index 5)
         if (index !== 5) return null;
 
         return (
-            <g>
+            <g key={`dot-${index}`}>
                 <circle cx={cx} cy={cy} r={5} fill="#4CAF50" stroke="white" strokeWidth={2} />
                 <foreignObject x={cx - 60} y={cy - 40} width={120} height={35}>
                     <div className="bg-green-700 text-white p-1 rounded text-xs">

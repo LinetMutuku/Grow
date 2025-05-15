@@ -63,15 +63,22 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ isOpen, onClose, us
                     {/* Header */}
                     <div className="flex items-center justify-between p-6 border-b border-gray-100">
                         <div className="flex items-center space-x-4">
-                            <div className="w-14 h-14 rounded-full overflow-hidden">
-                                {/* Replace img with Next.js Image component */}
+                            <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                                {/* Solution 1: Use a local placeholder image */}
+                                <div className="text-2xl font-bold text-gray-500">
+                                    {user.name.charAt(0)}
+                                </div>
+
+                                {/* Solution 2: Use Image with unoptimized (uncomment if you add the domain to next.config.js)
                                 <Image
                                     src="https://api.dicebear.com/7.x/avataaars/svg?seed=April"
                                     alt={user.name}
                                     width={56}
                                     height={56}
                                     className="object-cover"
+                                    unoptimized
                                 />
+                                */}
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-gray-900">{user.name}</h2>
