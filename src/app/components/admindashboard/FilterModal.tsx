@@ -2,14 +2,21 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 
-const FilterModal = ({ isOpen, onClose, onFilterChange }) => {
+// Define the props interface for TypeScript
+interface FilterModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onFilterChange: (filter: string) => void;
+}
+
+const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onFilterChange }) => {
     const [selectedFilter, setSelectedFilter] = useState('all');
-    const modalRef = useRef(null);
+    const modalRef = useRef<HTMLDivElement>(null);
 
     // Close modal when clicking outside
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
                 onClose();
             }
         };
@@ -22,7 +29,7 @@ const FilterModal = ({ isOpen, onClose, onFilterChange }) => {
         };
     }, [isOpen, onClose]);
 
-    const handleFilterSelect = (filter) => {
+    const handleFilterSelect = (filter: string) => {
         setSelectedFilter(filter);
         onFilterChange(filter);
         onClose();
