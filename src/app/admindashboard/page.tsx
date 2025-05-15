@@ -68,9 +68,10 @@ const AdminDashboardPage = () => {
             {/*  Sidebar */}
             <Sidebar />
 
-            {/* Main content area */}
+            {/* Main content area - Add id for CSS selection */}
             <div
-                className="flex-1 overflow-auto w-full transition-all duration-300 ease-in-out ml-20 md:ml-64"
+                id="main-content-area"
+                className="flex-1 overflow-auto w-full transition-all duration-300 ease-in-out"
             >
                 {/* Header */}
                 <Header
@@ -79,11 +80,11 @@ const AdminDashboardPage = () => {
                 />
 
                 {/* Dashboard content */}
-                <div className="p-6 bg-gray-50">
+                <div className="p-4 md:p-6 bg-gray-50">
                     {/* Main Content - Grid Layout */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
                         {/* Left Column - Main Content */}
-                        <div className="lg:col-span-2 space-y-6">
+                        <div className="lg:col-span-2 space-y-4 md:space-y-6">
                             {/* Key Metrics */}
                             <KeyMetrics />
 
@@ -95,7 +96,7 @@ const AdminDashboardPage = () => {
                         </div>
 
                         {/* Right Column - Sidebar Content */}
-                        <div className="space-y-6">
+                        <div className="space-y-4 md:space-y-6">
                             {/* User Stats */}
                             <UserStats />
 

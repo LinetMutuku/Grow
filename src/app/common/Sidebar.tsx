@@ -51,7 +51,11 @@ const Sidebar = ({ companyName = "GROW" }) => {
     useEffect(() => {
         const handleResize = () => {
             setIsMobileView(window.innerWidth < 768);
+            if (window.innerWidth >= 768) {
+                setMobileMenuOpen(false);
+            }
         };
+
         handleResize();
         window.addEventListener('resize', handleResize);
 
@@ -98,13 +102,35 @@ const Sidebar = ({ companyName = "GROW" }) => {
         event.stopPropagation();
     };
 
+    // Close mobile menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (isMobileView && mobileMenuOpen) {
+                const sidebar = document.querySelector('.sidebar');
+                const menuButton = document.querySelector('.mobile-menu-button');
+
+                if (sidebar &&
+                    !sidebar.contains(event.target) &&
+                    menuButton &&
+                    !menuButton.contains(event.target)) {
+                    setMobileMenuOpen(false);
+                }
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isMobileView, mobileMenuOpen]);
+
     return (
         <>
             {/* Mobile Menu Button */}
             {isMobileView && (
                 <button
+                    className="mobile-menu-button fixed top-4 left-4 z-40 p-2 rounded-md bg-green-600 text-white shadow-lg"
                     onClick={toggleMobileMenu}
-                    className="fixed top-4 left-4 z-30 p-2 rounded-md bg-green-600 text-white shadow-lg"
                     aria-label="Toggle mobile menu"
                 >
                     <FiMenu size={24} />
@@ -114,17 +140,17 @@ const Sidebar = ({ companyName = "GROW" }) => {
             {/* Overlay for mobile */}
             {isMobileView && mobileMenuOpen && (
                 <div
-                    className="fixed inset-0 bg-black bg-opacity-50 z-20"
+                    className="fixed inset-0 bg-black bg-opacity-30 z-20"
                     onClick={toggleMobileMenu}
                 />
             )}
 
             {/* Sidebar */}
             <aside
-                className={`fixed top-0 left-0 h-screen bg-white border-r border-gray-200 shadow-lg z-20
-          transition-all duration-300 ease-in-out
-          ${isMobileView
-                    ? mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`sidebar fixed top-0 left-0 h-screen bg-white border-r border-gray-200 shadow-lg z-30
+                transition-all duration-300 ease-in-out
+                ${isMobileView
+                    ? mobileMenuOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64'
                     : collapsed ? 'w-20' : 'w-64'
                 }`}
             >
@@ -346,7 +372,7 @@ const Sidebar = ({ companyName = "GROW" }) => {
                         </div>
 
                         {showUserMenu && (
-                            <div className={`absolute bottom-full ${collapsed ? 'left-0' : 'left-1/2 -translate-x-1/2'} mb-2 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-200 transform transition-all duration-200 ease-out`}>
+                            <div className={`absolute bottom-full ${collapsed ? 'left-0' : 'left-1/2 -translate-x-1/2'} mb-2 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-200 transform transition-all duration-200 ease-out z-40`}>
                                 <Link href="/profile" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
                   <span className="h-6 w-6 mr-2 rounded-full bg-gray-100 flex items-center justify-center">
                     <FiUsers size={12} />
