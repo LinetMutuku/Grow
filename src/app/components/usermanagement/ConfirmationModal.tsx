@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 029c5bb9df683e71f37300c4eed6711534230af9
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
@@ -108,4 +111,8 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirmResult, title, actionText
     );
 };
 
+<<<<<<< HEAD
 export default ConfirmationModal;
+=======
+export default ConfirmationModal;
+>>>>>>> 029c5bb9df683e71f37300c4eed6711534230af9

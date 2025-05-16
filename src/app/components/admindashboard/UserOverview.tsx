@@ -220,6 +220,11 @@ const UserOverview: React.FC<UserOverviewProps> = ({ maxUsers = 8 }) => {
                     No users found matching your criteria
                 </div>
             )}
+<<<<<<< HEAD
+=======
+
+            {/* Filter Modal is now placed directly in the header next to the filter button */}
+>>>>>>> 029c5bb9df683e71f37300c4eed6711534230af9
         </div>
     );
 };

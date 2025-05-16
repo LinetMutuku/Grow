@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 029c5bb9df683e71f37300c4eed6711534230af9
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -85,8 +88,16 @@ const ActionModal = ({ isOpen, onClose, onAction, userStatus }) => {
                 </div>
             )}
 
+<<<<<<< HEAD
+=======
+            {/* No longer rendering ConfirmationModal here - it's handled by parent */}
+>>>>>>> 029c5bb9df683e71f37300c4eed6711534230af9
         </>
     );
 };
 
+<<<<<<< HEAD
 export default ActionModal;
+=======
+export default ActionModal;
+>>>>>>> 029c5bb9df683e71f37300c4eed6711534230af9

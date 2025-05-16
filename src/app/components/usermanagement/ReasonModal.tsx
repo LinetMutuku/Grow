@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 029c5bb9df683e71f37300c4eed6711534230af9
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
@@ -116,4 +119,8 @@ const ReasonModal = ({ isOpen, onClose, onSubmit, type = 'suspension' }) => {
     );
 };
 
+<<<<<<< HEAD
 export default ReasonModal;
+=======
+export default ReasonModal;
+>>>>>>> 029c5bb9df683e71f37300c4eed6711534230af9
